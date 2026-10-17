@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: phuc-toan-ai
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
+
