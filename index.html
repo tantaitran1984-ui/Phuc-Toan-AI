@@ -1470,8 +1470,8 @@
                     Cài ứng dụng
                 </button>
                 <div class="user-tag-row">
-                    <div class="user-tag" id="userTag">phuctt3443</div>
-                    <button class="user-switch-btn" onclick="openAuthModal('login')">Đổi TK</button>
+                    <div class="user-tag" id="userTag">Chưa đăng nhập</div>
+                    <button class="user-switch-btn" id="userActionBtn" onclick="openAuthModal('login')">Đăng nhập</button>
                 </div>
             </div>
         </aside>
@@ -1638,8 +1638,12 @@
         // PWA prompt
         let deferredPrompt = null;
 
-        // Active user state
-        let currentUser = localStorage.getItem('phuc_current_user') || 'phuctt3443';
+        // Active user state (null if not logged in)
+        let currentUser = localStorage.getItem('phuc_current_user');
+        if (currentUser === 'phuctt3443') {
+            currentUser = null;
+            localStorage.removeItem('phuc_current_user');
+        }
         let authMode = 'login'; // 'login' or 'register'
 
         // Sessions list for user
@@ -1751,9 +1755,10 @@ QUY TẮC BẮT BUỘC:
 
         // ================= USER AUTHENTICATION =================
         function loadUserData() {
-            const raw = localStorage.getItem(`phuc_sessions_${currentUser}`);
+            const userKey = currentUser || 'guest';
+            const raw = localStorage.getItem(`phuc_sessions_${userKey}`);
             sessions = raw ? JSON.parse(raw) : [];
-            currentSessionId = localStorage.getItem(`phuc_cur_sess_${currentUser}`) || null;
+            currentSessionId = localStorage.getItem(`phuc_cur_sess_${userKey}`) || null;
 
             // Cleanse any old calculator emoji from stored messages
             sessions.forEach(s => {
@@ -1766,7 +1771,15 @@ QUY TẮC BẮT BUỘC:
                 }
             });
 
-            document.getElementById('userTag').textContent = currentUser;
+            const tagEl = document.getElementById('userTag');
+            const actionBtn = document.getElementById('userActionBtn');
+            if (currentUser) {
+                if (tagEl) tagEl.textContent = currentUser;
+                if (actionBtn) actionBtn.textContent = 'Đổi TK';
+            } else {
+                if (tagEl) tagEl.textContent = 'Chưa đăng nhập';
+                if (actionBtn) actionBtn.textContent = 'Đăng nhập';
+            }
 
             if (sessions.length === 0) {
                 const defaultId = 'sess_' + Date.now();
@@ -1792,9 +1805,14 @@ QUY TẮC BẮT BUỘC:
         }
 
         function saveUserData() {
-            localStorage.setItem(`phuc_sessions_${currentUser}`, JSON.stringify(sessions));
-            localStorage.setItem(`phuc_cur_sess_${currentUser}`, currentSessionId);
-            localStorage.setItem('phuc_current_user', currentUser);
+            const userKey = currentUser || 'guest';
+            localStorage.setItem(`phuc_sessions_${userKey}`, JSON.stringify(sessions));
+            localStorage.setItem(`phuc_cur_sess_${userKey}`, currentSessionId);
+            if (currentUser) {
+                localStorage.setItem('phuc_current_user', currentUser);
+            } else {
+                localStorage.removeItem('phuc_current_user');
+            }
         }
 
         function openAuthModal(mode = 'login') {
@@ -1882,6 +1900,12 @@ QUY TẮC BẮT BUỘC:
         }
 
         function handleLogout() {
+            if (currentUser) {
+                currentUser = null;
+                localStorage.removeItem('phuc_current_user');
+                loadUserData();
+                showToast('Đã đăng xuất tài khoản');
+            }
             openAuthModal('login');
         }
 
