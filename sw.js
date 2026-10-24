@@ -1,10 +1,9 @@
-const CACHE_NAME = 'phuc-ai-v2';
+const CACHE_NAME = 'phuc-toan-ai-v3';
 const ASSETS = [
-    './',
-    './index.html',
-    './manifest.json',
+    './favicon.png',
     './icon-192.png',
-    './icon-512.png'
+    './icon-512.png',
+    './manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
@@ -23,12 +22,23 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
+// Network-first strategy: always fetch fresh index.html from server!
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
-    if (event.request.url.includes('generativelanguage.googleapis.com')) {
-        return; // Don't cache Gemini API calls
+    
+    // Always fetch fresh index.html or API
+    if (event.request.url.includes('index.html') || event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .catch(() => caches.match(event.request))
+        );
+        return;
     }
+    
+    // Static assets: cache-first
     event.respondWith(
-        fetch(event.request).catch(() => caches.match(event.request))
+        caches.match(event.request).then((cached) => {
+            return cached || fetch(event.request);
+        })
     );
 });

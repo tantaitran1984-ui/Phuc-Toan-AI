@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -1386,20 +1386,33 @@
 
             .sidebar {
                 position: absolute;
-                left: 0;
+                left: -290px;
                 top: 0;
                 bottom: 0;
                 height: 100%;
-                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
-                z-index: 100;
-            }
-
-            .sidebar.collapsed {
-                left: -290px !important;
                 width: 270px !important;
                 min-width: 270px !important;
                 padding: 22px 18px !important;
                 opacity: 1 !important;
+                overflow: visible !important;
+                pointer-events: auto !important;
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
+                z-index: 100;
+            }
+
+            .sidebar.mobile-open {
+                left: 0 !important;
+            }
+
+            .sidebar-backdrop {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.55);
+                z-index: 99;
+            }
+            .sidebar-backdrop.active {
+                display: block;
             }
 
             .chat-header {
@@ -1429,6 +1442,9 @@
     </style>
 </head>
 <body>
+
+    <!-- Mobile sidebar backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
 
     <!-- Ambient floating particles canvas -->
     <canvas class="ambient-canvas" id="ambientCanvas"></canvas>
@@ -1878,7 +1894,6 @@ QUY TẮC BẮT BUỘC:
                 users[u] = p;
                 localStorage.setItem('phuc_registered_users', JSON.stringify(users));
                 currentUser = u;
-                saveUserData();
                 loadUserData();
                 closeAuthModal();
                 showToast(`🎉 Đăng ký thành công! Xin chào ${u}`);
@@ -1892,7 +1907,6 @@ QUY TẮC BẮT BUỘC:
                     localStorage.setItem('phuc_registered_users', JSON.stringify(users));
                 }
                 currentUser = u;
-                saveUserData();
                 loadUserData();
                 closeAuthModal();
                 showToast(`Đăng nhập thành công! Xin chào ${u}`);
@@ -1910,9 +1924,22 @@ QUY TẮC BẮT BUỘC:
         }
 
         // ================= SIDEBAR & NAVIGATION =================
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            sidebar.classList.remove('mobile-open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
+            if (window.innerWidth <= 860) {
+                sidebar.classList.toggle('mobile-open');
+                const backdrop = document.getElementById('sidebarBackdrop');
+                if (backdrop) backdrop.classList.toggle('active');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
         }
 
         function createNewChat() {
