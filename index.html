@@ -1184,6 +1184,43 @@
         }
 
         /* Modal styling matching Image 4 */
+        /* Auth modal switchable tabs */
+        .auth-tabs-row {
+            display: flex;
+            gap: 6px;
+            background: rgba(14, 28, 48, 0.75);
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(56, 139, 253, 0.25);
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #8da4c4;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 4px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .auth-tab-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .auth-tab-btn.active {
+            background: var(--btn-primary);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(25, 113, 194, 0.45);
+        }
+
         .auth-card-image4 {
             background: rgba(9, 21, 38, 0.96);
             border: 1.5px solid #00bcd4;
@@ -1609,7 +1646,7 @@
                 <div class="user-tag-row">
                     <div class="user-tag" id="userTag">Chưa đăng nhập</div>
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <button class="user-switch-btn" id="userSyncBtn" onclick="openSyncModal()" title="Đồng bộ tài khoản & bài tập sang thiết bị khác" style="background:rgba(34,139,230,0.22); border-color:rgba(56,139,253,0.5);">📲 Đồng bộ</button>
+                        <button class="user-switch-btn" id="userMyCodeBtn" onclick="openMyCodeModal()" title="Xem mã tài khoản để đăng nhập máy khác" style="display:none; background:rgba(34,139,230,0.22); border-color:rgba(56,139,253,0.5);">🔑 Mã TK</button>
                         <button class="user-switch-btn" id="userActionBtn" onclick="openAuthModal('login')">Đăng nhập</button>
                     </div>
                 </div>
@@ -1709,40 +1746,31 @@
     </div>
 
     <!-- PWA Install Modal Guide -->
-        <!-- Sync Modal: Transfer Account & Sessions to Another Device -->
-    <div class="modal-overlay" id="syncModal">
+        <!-- My Code Modal (Xem mã tài khoản của bạn) -->
+    <div class="modal-overlay" id="myCodeModal">
         <div class="auth-card-image4" style="max-width: 480px;">
-            <button class="auth-close-x" onclick="closeSyncModal()">✕</button>
+            <button class="auth-close-x" onclick="closeMyCodeModal()">✕</button>
             <div class="auth-card-header">
                 <div class="auth-avatar-p">P</div>
                 <div class="auth-header-text">
                     <div class="app-sub-title">PHÚC BT</div>
-                    <div class="app-main-title">Đồng bộ sang thiết bị khác</div>
+                    <div class="app-main-title">Mã tài khoản cá nhân</div>
                 </div>
             </div>
             <div class="auth-divider"></div>
             
             <p style="font-size:13.5px; line-height:1.6; color:#a0b8d5; margin-bottom:14px;">
-                Dữ liệu bài tập của bạn luôn được lưu vĩnh viễn trên máy này. Khi muốn đổi qua điện thoại hoặc máy tính khác, hãy dùng <strong>Mã đồng bộ</strong> bên dưới:
+                Tài khoản <span id="myCodeUsername" style="color:#00e5ff; font-weight:700;"></span>: Bạn có thể đăng nhập bình thường bằng Tên & Mật khẩu trên mọi thiết bị. Hoặc dùng <strong>Mã tài khoản</strong> dưới đây để đăng nhập nhanh trong 1 giây:
             </p>
 
             <div class="auth-field-group">
-                <label class="auth-field-label">1. Mã đồng bộ của tài khoản này (để chuyển đi):</label>
                 <div class="auth-input-wrapper">
-                    <input type="text" class="auth-field-input" id="syncCodeOutput" readonly style="font-family:monospace; font-size:12px; padding-right:85px;" value="">
-                    <button type="button" class="auth-input-toggle-btn" style="width:75px;" onclick="copySyncCode()">Sao chép</button>
+                    <input type="text" class="auth-field-input" id="myCodeOutput" readonly style="font-family:monospace; font-size:12px; padding-right:85px;" value="">
+                    <button type="button" class="auth-input-toggle-btn" style="width:75px;" onclick="copyMyCode()">Sao chép</button>
                 </div>
             </div>
 
-            <div class="auth-field-group" style="margin-top:16px;">
-                <label class="auth-field-label">2. Hoặc dán mã từ thiết bị khác vào đây (để nhận):</label>
-                <textarea class="auth-field-input" id="syncCodeInput" rows="2" style="padding:10px; font-family:monospace; font-size:12px; resize:none;" placeholder="Dán mã đồng bộ vào đây..."></textarea>
-            </div>
-
-            <div style="display:flex; gap:10px; margin-top:18px;">
-                <button type="button" class="btn-auth-submit" style="flex:1;" onclick="applySyncCode()">📲 Đồng bộ ngay</button>
-                <button type="button" class="btn-auth-submit" style="flex:1; background:rgba(25,113,194,0.3); border:1px solid rgba(56,139,253,0.5);" onclick="closeSyncModal()">Đóng</button>
-            </div>
+            <button type="button" class="btn-auth-submit" style="margin-top:16px;" onclick="closeMyCodeModal()">Đã hiểu</button>
         </div>
     </div>
 
@@ -1769,7 +1797,7 @@
         </div>
     </div>
 
-    <!-- Auth Modal (Đăng nhập / Đăng ký) Matching Image 4 -->
+    <!-- Auth Modal with 3 Seamless Methods: Login / Register / Quick Code -->
     <div class="modal-overlay" id="authModal">
         <div class="auth-card-image4">
             <button class="auth-close-x" onclick="closeAuthModal()">✕</button>
@@ -1781,27 +1809,52 @@
                 </div>
             </div>
             <div class="auth-divider"></div>
-            
-            <div class="auth-field-group">
-                <label class="auth-field-label">Tên đăng nhập</label>
-                <div class="auth-input-wrapper">
-                    <input type="text" class="auth-field-input" id="authUsername" placeholder="Nhập tên đăng nhập...">
+
+            <!-- 3 Switchable Methods Tabs -->
+            <div class="auth-tabs-row">
+                <button type="button" class="auth-tab-btn active" id="tabLogin" onclick="switchAuthMode('login')">👤 Đăng nhập</button>
+                <button type="button" class="auth-tab-btn" id="tabRegister" onclick="switchAuthMode('register')">📝 Đăng ký</button>
+                <button type="button" class="auth-tab-btn" id="tabCode" onclick="switchAuthMode('code')">🔑 Dùng Mã</button>
+            </div>
+
+            <!-- Standard Username / Password Container -->
+            <div id="standardAuthFields">
+                <div class="auth-field-group">
+                    <label class="auth-field-label">Tên tài khoản</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" class="auth-field-input" id="authUsername" placeholder="Nhập tên tài khoản...">
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label class="auth-field-label">Mật khẩu</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" class="auth-field-input" id="authPassword" placeholder="Nhập mật khẩu...">
+                        <button type="button" class="auth-input-toggle-btn" id="togglePasswordBtn" onclick="togglePasswordVisibility('authPassword', this)">Hiện</button>
+                    </div>
+                </div>
+
+                <div class="auth-field-group" id="confirmPassGroup" style="display: none;">
+                    <label class="auth-field-label">Xác nhận mật khẩu</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" class="auth-field-input" id="authPasswordConfirm" placeholder="Nhập lại mật khẩu...">
+                        <button type="button" class="auth-input-toggle-btn" onclick="togglePasswordVisibility('authPasswordConfirm', this)">Hiện</button>
+                    </div>
+                </div>
+
+                <div style="font-size:12px; color:#8da4c4; line-height:1.5; margin-bottom:14px;" id="authHintText">
+                    💡 Đăng nhập thường sẽ tự động đồng bộ và tải toàn bộ bài tập của bạn từ đám mây về thiết bị này.
                 </div>
             </div>
 
-            <div class="auth-field-group">
-                <label class="auth-field-label">Mật khẩu</label>
-                <div class="auth-input-wrapper">
-                    <input type="password" class="auth-field-input" id="authPassword" placeholder="Nhập mật khẩu...">
-                    <button type="button" class="auth-input-toggle-btn" id="togglePasswordBtn" onclick="togglePasswordVisibility('authPassword', this)">Hiện</button>
+            <!-- Quick Code Login Container -->
+            <div id="codeAuthFields" style="display: none;">
+                <div class="auth-field-group">
+                    <label class="auth-field-label">Dán Mã Tài Khoản của bạn vào đây:</label>
+                    <textarea class="auth-field-input" id="authCodeInput" rows="3" style="padding:10px; font-family:monospace; font-size:12px; resize:none;" placeholder="Dán mã tài khoản để đăng nhập ngay lập tức..."></textarea>
                 </div>
-            </div>
-
-            <div class="auth-field-group" id="confirmPassGroup" style="display: none;">
-                <label class="auth-field-label">Xác nhận mật khẩu</label>
-                <div class="auth-input-wrapper">
-                    <input type="password" class="auth-field-input" id="authPasswordConfirm" placeholder="Nhập lại mật khẩu...">
-                    <button type="button" class="auth-input-toggle-btn" onclick="togglePasswordVisibility('authPasswordConfirm', this)">Hiện</button>
+                <div style="font-size:12px; color:#8da4c4; line-height:1.5; margin-bottom:14px;">
+                    ✨ Phương thức này giúp bạn đăng nhập và khôi phục 100% bài tập trong 1 giây mà không cần nhớ mật khẩu.
                 </div>
             </div>
 
@@ -2025,12 +2078,15 @@ QUY TẮC BẮT BUỘC:
 
             const tagEl = document.getElementById('userTag');
             const actionBtn = document.getElementById('userActionBtn');
+            const myCodeBtn = document.getElementById('userMyCodeBtn');
             if (currentUser) {
                 if (tagEl) tagEl.textContent = currentUser;
                 if (actionBtn) actionBtn.textContent = 'Đổi TK';
+                if (myCodeBtn) myCodeBtn.style.display = 'inline-block';
             } else {
                 if (tagEl) tagEl.textContent = 'Chưa đăng nhập';
                 if (actionBtn) actionBtn.textContent = 'Đăng nhập';
+                if (myCodeBtn) myCodeBtn.style.display = 'none';
             }
 
             if (sessions.length === 0) {
@@ -2063,6 +2119,7 @@ QUY TẮC BẮT BUỘC:
             localStorage.setItem(`phuc_cur_sess_${userKey}`, currentSessionId);
             if (currentUser) {
                 localStorage.setItem('phuc_current_user', currentUser);
+                if (typeof triggerCloudSync === 'function') triggerCloudSync();
             } else {
                 localStorage.removeItem('phuc_current_user');
             }
@@ -2081,6 +2138,10 @@ QUY TẮC BẮT BUỘC:
             document.getElementById('authModal').classList.remove('active');
         }
 
+        // Cloud backend endpoints for cross-device sync & unique account registry
+        const CLOUD_KV_URL = 'https://api.keyval.org';
+        const CLOUD_OBJ_URL = 'https://api.restful-api.dev/objects';
+
         function switchAuthMode(mode) {
             authMode = mode;
             updateAuthModalUI();
@@ -2088,12 +2149,48 @@ QUY TẮC BẮT BUỘC:
 
         function updateAuthModalUI() {
             const isReg = authMode === 'register';
-            document.getElementById('authMainTitle').textContent = isReg ? 'Đăng ký tài khoản' : 'Đăng nhập tài khoản';
-            document.getElementById('confirmPassGroup').style.display = isReg ? 'block' : 'none';
-            document.getElementById('btnAuthSubmit').textContent = isReg ? 'Đăng ký' : 'Đăng nhập';
-            document.getElementById('authToggleLink').innerHTML = isReg ?
-                `Đã có tài khoản? <span onclick="switchAuthMode('login')">Đăng nhập ngay</span>` :
-                `Chưa có tài khoản? <span onclick="switchAuthMode('register')">Đăng ký ngay</span>`;
+            const isCode = authMode === 'code';
+
+            // Update tab buttons active state
+            const tabLogin = document.getElementById('tabLogin');
+            const tabReg = document.getElementById('tabRegister');
+            const tabCode = document.getElementById('tabCode');
+            if (tabLogin) tabLogin.className = 'auth-tab-btn' + (authMode === 'login' ? ' active' : '');
+            if (tabReg) tabReg.className = 'auth-tab-btn' + (isReg ? ' active' : '');
+            if (tabCode) tabCode.className = 'auth-tab-btn' + (isCode ? ' active' : '');
+
+            // Container visibility
+            const stdFields = document.getElementById('standardAuthFields');
+            const codeFields = document.getElementById('codeAuthFields');
+            const confirmGroup = document.getElementById('confirmPassGroup');
+            const titleEl = document.getElementById('authMainTitle');
+            const submitBtn = document.getElementById('btnAuthSubmit');
+            const hintText = document.getElementById('authHintText');
+            const toggleLink = document.getElementById('authToggleLink');
+
+            if (isCode) {
+                if (stdFields) stdFields.style.display = 'none';
+                if (codeFields) codeFields.style.display = 'block';
+                if (titleEl) titleEl.textContent = 'Đăng nhập bằng Mã';
+                if (submitBtn) submitBtn.textContent = '🔑 Đăng nhập ngay';
+                if (toggleLink) toggleLink.innerHTML = `Đăng nhập bình thường? <span onclick="switchAuthMode('login')">Dùng Tên & Mật khẩu</span>`;
+            } else if (isReg) {
+                if (stdFields) stdFields.style.display = 'block';
+                if (codeFields) codeFields.style.display = 'none';
+                if (confirmGroup) confirmGroup.style.display = 'block';
+                if (titleEl) titleEl.textContent = 'Đăng ký tài khoản';
+                if (submitBtn) submitBtn.textContent = 'Đăng ký tài khoản';
+                if (hintText) hintText.textContent = '💡 Mỗi tên tài khoản là duy nhất trên toàn hệ thống và lưu trữ bài tập suốt đời.';
+                if (toggleLink) toggleLink.innerHTML = `Đã có tài khoản? <span onclick="switchAuthMode('login')">Đăng nhập ngay</span>`;
+            } else {
+                if (stdFields) stdFields.style.display = 'block';
+                if (codeFields) codeFields.style.display = 'none';
+                if (confirmGroup) confirmGroup.style.display = 'none';
+                if (titleEl) titleEl.textContent = 'Đăng nhập tài khoản';
+                if (submitBtn) submitBtn.textContent = 'Đăng nhập';
+                if (hintText) hintText.textContent = '💡 Đăng nhập thường sẽ tự động đồng bộ và tải toàn bộ bài tập của bạn từ đám mây về thiết bị này.';
+                if (toggleLink) toggleLink.innerHTML = `Chưa có tài khoản? <span onclick="switchAuthMode('register')">Đăng ký ngay</span>`;
+            }
         }
 
         function togglePasswordVisibility(fieldId, btn) {
@@ -2107,7 +2204,153 @@ QUY TẮC BẮT BUỘC:
             }
         }
 
-        function handleAuthSubmit() {
+        // ================= CLOUD SYNC HELPERS =================
+        async function syncUserToCloud(username, password, sessionsData) {
+            if (!username || username === 'guest') return;
+            try {
+                const uKey = username.toLowerCase();
+                let cloudId = localStorage.getItem(`phuc_cloud_id_${uKey}`);
+
+                if (!cloudId) {
+                    const kvResp = await fetch(`${CLOUD_KV_URL}/get/phucbt_u_${uKey}`);
+                    if (kvResp.ok) {
+                        const kvData = await kvResp.json();
+                        if (kvData.status === 'SUCCESS' && kvData.val) {
+                            const parts = kvData.val.split(':::');
+                            if (parts.length > 1) cloudId = parts[1];
+                        }
+                    }
+                }
+
+                if (cloudId) {
+                    await fetch(`${CLOUD_OBJ_URL}/${cloudId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: `phucbt_${uKey}`,
+                            data: { sessions: sessionsData, updatedAt: Date.now() }
+                        })
+                    });
+                    localStorage.setItem(`phuc_cloud_id_${uKey}`, cloudId);
+                } else {
+                    const objResp = await fetch(CLOUD_OBJ_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: `phucbt_${uKey}`,
+                            data: { sessions: sessionsData, createdAt: Date.now() }
+                        })
+                    });
+                    if (objResp.ok) {
+                        const objData = await objResp.json();
+                        cloudId = objData.id;
+                        localStorage.setItem(`phuc_cloud_id_${uKey}`, cloudId);
+                        await fetch(`${CLOUD_KV_URL}/set`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ key: `phucbt_u_${uKey}`, val: `${password}:::${cloudId}` })
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn('Cloud sync error (stored locally):', e);
+            }
+        }
+
+        async function fetchUserFromCloud(username, password) {
+            const uKey = username.toLowerCase();
+            try {
+                const kvResp = await fetch(`${CLOUD_KV_URL}/get/phucbt_u_${uKey}`);
+                if (!kvResp.ok) return null;
+                const kvData = await kvResp.json();
+                if (kvData.status !== 'SUCCESS' || !kvData.val) return null;
+
+                const parts = kvData.val.split(':::');
+                const cloudPass = parts[0];
+                const cloudId = parts[1];
+
+                if (cloudPass !== password) {
+                    return { error: 'WRONG_PASS' };
+                }
+
+                if (cloudId) {
+                    localStorage.setItem(`phuc_cloud_id_${uKey}`, cloudId);
+                    const objResp = await fetch(`${CLOUD_OBJ_URL}/${cloudId}`);
+                    if (objResp.ok) {
+                        const objData = await objResp.json();
+                        return {
+                            user: username,
+                            pass: cloudPass,
+                            sessions: objData?.data?.sessions || [],
+                            cloudId: cloudId
+                        };
+                    }
+                }
+                return { user: username, pass: cloudPass, sessions: [] };
+            } catch (e) {
+                console.warn('Cloud fetch error:', e);
+                return null;
+            }
+        }
+
+        // Debounced cloud sync on session changes
+        let cloudSyncTimeout = null;
+        function triggerCloudSync() {
+            if (!currentUser || currentUser === 'guest') return;
+            clearTimeout(cloudSyncTimeout);
+            cloudSyncTimeout = setTimeout(() => {
+                let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
+                const pwd = users[currentUser] || '';
+                syncUserToCloud(currentUser, pwd, sessions);
+            }, 1200);
+        }
+
+        // ================= AUTH SUBMISSION =================
+        async function handleAuthSubmit() {
+            // Method 3: Quick Code Login
+            if (authMode === 'code') {
+                const input = document.getElementById('authCodeInput');
+                const val = input ? input.value.trim() : '';
+                if (!val) {
+                    showToast('Vui lòng dán mã tài khoản vào ô');
+                    return;
+                }
+                try {
+                    let jsonStr;
+                    try {
+                        jsonStr = decodeURIComponent(escape(atob(val)));
+                    } catch (e) {
+                        jsonStr = val;
+                    }
+                    const data = JSON.parse(jsonStr);
+                    if (!data || !Array.isArray(data.sessions)) {
+                        throw new Error('Mã không hợp lệ');
+                    }
+                    if (data.user) {
+                        let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
+                        if (data.pass) {
+                            users[data.user] = data.pass;
+                            localStorage.setItem('phuc_registered_users', JSON.stringify(users));
+                        }
+                        currentUser = data.user;
+                        localStorage.setItem('phuc_current_user', currentUser);
+                    }
+                    sessions = data.sessions;
+                    currentSessionId = data.curId || (sessions[0] ? sessions[0].id : null);
+                    saveUserData();
+                    loadUserData();
+                    closeAuthModal();
+                    if (input) input.value = '';
+                    showToast(`🎉 Đăng nhập thành công! Xin chào ${currentUser || 'bạn'}`);
+                    let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
+                    syncUserToCloud(currentUser, users[currentUser] || '', sessions);
+                } catch (e) {
+                    showToast('⚠️ Mã tài khoản không hợp lệ hoặc bị lỗi!');
+                }
+                return;
+            }
+
+            // Method 1 & 2: Username & Password
             const u = document.getElementById('authUsername').value.trim();
             const p = document.getElementById('authPassword').value;
             const pConf = document.getElementById('authPasswordConfirm').value;
@@ -2117,21 +2360,46 @@ QUY TẮC BẮT BUỘC:
                 return;
             }
 
+            const submitBtn = document.getElementById('btnAuthSubmit');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Đang xử lý...';
+            }
+
             let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
+            const uKey = u.toLowerCase();
 
             if (authMode === 'register') {
                 if (p !== pConf) {
                     showToast('Mật khẩu xác nhận không trùng khớp');
-                    return;
-                }
-                // Case-insensitive check: each username is strictly unique!
-                const existingKey = Object.keys(users).find(k => k.toLowerCase() === u.toLowerCase());
-                if (existingKey) {
-                    showToast(`⚠️ Tên "${u}" đã có người đăng ký rồi! Vui lòng chọn tên khác (ví dụ: ${u}123)`);
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng ký tài khoản'; }
                     return;
                 }
 
-                // Register user permanently
+                // 1. Check local
+                const localExists = Object.keys(users).find(k => k.toLowerCase() === uKey);
+                if (localExists) {
+                    showToast(`⚠️ Tên "${u}" đã có người đăng ký! Vui lòng chọn tên khác (ví dụ: ${u}123)`);
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng ký tài khoản'; }
+                    return;
+                }
+
+                // 2. Check Global Cloud on keyval.org
+                try {
+                    const checkResp = await fetch(`${CLOUD_KV_URL}/get/phucbt_u_${uKey}`);
+                    if (checkResp.ok) {
+                        const checkData = await checkResp.json();
+                        if (checkData.status === 'SUCCESS' && checkData.val) {
+                            showToast(`⚠️ Tên "${u}" đã được sử dụng trên hệ thống! Vui lòng chọn tên khác (ví dụ: ${u}123)`);
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng ký tài khoản'; }
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Network check fallback to local:', e);
+                }
+
+                // Register user locally and persist
                 users[u] = p;
                 localStorage.setItem('phuc_registered_users', JSON.stringify(users));
                 currentUser = u;
@@ -2140,39 +2408,86 @@ QUY TẮC BẮT BUỘC:
                 loadUserData();
                 closeAuthModal();
                 showToast(`🎉 Đăng ký thành công! Xin chào ${u}`);
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng ký tài khoản'; }
+
+                // Register to cloud in background
+                syncUserToCloud(u, p, sessions);
+
             } else {
-                // Login mode: strictly check if user exists
-                const matchedUser = Object.keys(users).find(k => k.toLowerCase() === u.toLowerCase());
-                if (!matchedUser) {
-                    showToast(`⚠️ Tài khoản "${u}" chưa tồn tại! Vui lòng bấm Đăng ký ngay bên dưới.`);
-                    return;
-                }
-                if (users[matchedUser] !== p) {
-                    showToast('⚠️ Mật khẩu không chính xác! Vui lòng kiểm tra lại.');
+                // LOGIN MODE
+                // 1. Try local cache
+                const localUser = Object.keys(users).find(k => k.toLowerCase() === uKey);
+                if (localUser && users[localUser] === p) {
+                    currentUser = localUser;
+                    localStorage.setItem('phuc_current_user', currentUser);
+                    saveUserData();
+                    loadUserData();
+                    closeAuthModal();
+                    showToast(`Đăng nhập thành công! Xin chào ${currentUser}`);
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng nhập'; }
+                    syncUserToCloud(currentUser, p, sessions);
                     return;
                 }
 
-                // Login successfully and persist forever
-                currentUser = matchedUser;
-                localStorage.setItem('phuc_current_user', currentUser);
-                saveUserData();
-                loadUserData();
-                closeAuthModal();
-                showToast(`Đăng nhập thành công! Xin chào ${currentUser}`);
+                // 2. Not in local or different device: Fetch from Cloud!
+                try {
+                    const cloudUser = await fetchUserFromCloud(u, p);
+                    if (cloudUser) {
+                        if (cloudUser.error === 'WRONG_PASS') {
+                            showToast('⚠️ Mật khẩu không chính xác! Vui lòng kiểm tra lại.');
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng nhập'; }
+                            return;
+                        }
+
+                        // Cloud login SUCCESS: sync sessions to this device!
+                        users[u] = p;
+                        localStorage.setItem('phuc_registered_users', JSON.stringify(users));
+                        currentUser = u;
+                        localStorage.setItem('phuc_current_user', currentUser);
+
+                        if (Array.isArray(cloudUser.sessions) && cloudUser.sessions.length > 0) {
+                            sessions = cloudUser.sessions;
+                            currentSessionId = sessions[0] ? sessions[0].id : null;
+                            localStorage.setItem(`phuc_sessions_${u}`, JSON.stringify(sessions));
+                            if (currentSessionId) localStorage.setItem(`phuc_cur_sess_${u}`, currentSessionId);
+                        }
+
+                        saveUserData();
+                        loadUserData();
+                        closeAuthModal();
+                        showToast(`🎉 Đăng nhập thành công! Đã đồng bộ bài tập từ đám mây.`);
+                        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng nhập'; }
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Cloud login fetch error:', e);
+                }
+
+                // 3. Failed
+                if (localUser && users[localUser] !== p) {
+                    showToast('⚠️ Mật khẩu không chính xác! Vui lòng kiểm tra lại.');
+                } else {
+                    showToast(`⚠️ Tài khoản "${u}" chưa tồn tại! Vui lòng bấm Đăng ký ngay.`);
+                }
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Đăng nhập'; }
             }
         }
 
-
-        // ================= CROSS-DEVICE SYNC & BACKUP =================
-        function openSyncModal() {
+        // ================= MY CODE MODAL =================
+        function openMyCodeModal() {
             closeMobileSidebar();
-            const modal = document.getElementById('syncModal');
-            const output = document.getElementById('syncCodeOutput');
-            const userKey = currentUser || 'guest';
-            
+            if (!currentUser || currentUser === 'guest') {
+                openAuthModal('login');
+                return;
+            }
+            const modal = document.getElementById('myCodeModal');
+            const nameEl = document.getElementById('myCodeUsername');
+            const output = document.getElementById('myCodeOutput');
+            if (nameEl) nameEl.textContent = currentUser;
+
             let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
-            let userPass = currentUser ? (users[currentUser] || '') : '';
-            
+            let userPass = users[currentUser] || '';
+
             const payload = {
                 v: 1,
                 user: currentUser,
@@ -2181,73 +2496,30 @@ QUY TẮC BẮT BUỘC:
                 curId: currentSessionId,
                 time: Date.now()
             };
-            
+
             try {
-                const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-                output.value = encoded;
+                output.value = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
             } catch (e) {
                 output.value = JSON.stringify(payload);
             }
-            
+
             modal.classList.add('active');
         }
 
-        function closeSyncModal() {
-            document.getElementById('syncModal').classList.remove('active');
+        function closeMyCodeModal() {
+            document.getElementById('myCodeModal').classList.remove('active');
         }
 
-        function copySyncCode() {
-            const output = document.getElementById('syncCodeOutput');
+        function copyMyCode() {
+            const output = document.getElementById('myCodeOutput');
             if (!output || !output.value) return;
             navigator.clipboard.writeText(output.value).then(() => {
-                showToast('📋 Đã sao chép mã đồng bộ vào bộ nhớ tạm!');
+                showToast('📋 Đã sao chép mã tài khoản vào bộ nhớ tạm!');
             }).catch(() => {
                 output.select();
                 document.execCommand('copy');
-                showToast('📋 Đã sao chép mã đồng bộ!');
+                showToast('📋 Đã sao chép mã tài khoản!');
             });
-        }
-
-        function applySyncCode() {
-            const input = document.getElementById('syncCodeInput');
-            const val = input ? input.value.trim() : '';
-            if (!val) {
-                showToast('Vui lòng dán mã đồng bộ vào ô số 2');
-                return;
-            }
-
-            try {
-                let jsonStr;
-                try {
-                    jsonStr = decodeURIComponent(escape(atob(val)));
-                } catch (e) {
-                    jsonStr = val;
-                }
-                const data = JSON.parse(jsonStr);
-                if (!data || !Array.isArray(data.sessions)) {
-                    throw new Error('Dữ liệu không hợp lệ');
-                }
-
-                if (data.user) {
-                    let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
-                    if (data.pass) {
-                        users[data.user] = data.pass;
-                        localStorage.setItem('phuc_registered_users', JSON.stringify(users));
-                    }
-                    currentUser = data.user;
-                    localStorage.setItem('phuc_current_user', currentUser);
-                }
-
-                sessions = data.sessions;
-                currentSessionId = data.curId || (sessions[0] ? sessions[0].id : null);
-                saveUserData();
-                loadUserData();
-                closeSyncModal();
-                input.value = '';
-                showToast(`🎉 Đồng bộ thành công! Đã tải ${sessions.length} cuộc hội thoại bài tập.`);
-            } catch (err) {
-                showToast('⚠️ Mã đồng bộ không hợp lệ hoặc bị lỗi!');
-            }
         }
 
         function handleLogout() {
@@ -2260,7 +2532,6 @@ QUY TẮC BẮT BUỘC:
             openAuthModal('login');
         }
 
-        // ================= SIDEBAR & NAVIGATION =================
         function closeMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebarBackdrop');
