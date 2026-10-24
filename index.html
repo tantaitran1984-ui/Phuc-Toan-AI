@@ -1575,7 +1575,7 @@
 
         <!-- ================= SIDEBAR ================= -->
         <aside class="sidebar" id="sidebar">
-            <!-- Brand header in sidebar (Image 3): Squircle Avatar 'P' + 'PHÚC TOÁN AI' -->
+            <!-- Brand header in sidebar (Image 3): Squircle Avatar 'P' + 'PHÚC BT' -->
             <div class="sidebar-brand-row">
                 <div class="avatar-box" title="PHÚC BT">P</div>
                 <div class="sidebar-brand-name">PHÚC BT</div>
@@ -1608,7 +1608,10 @@
                 </button>
                 <div class="user-tag-row">
                     <div class="user-tag" id="userTag">Chưa đăng nhập</div>
-                    <button class="user-switch-btn" id="userActionBtn" onclick="openAuthModal('login')">Đăng nhập</button>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button class="user-switch-btn" id="userSyncBtn" onclick="openSyncModal()" title="Đồng bộ tài khoản & bài tập sang thiết bị khác" style="background:rgba(34,139,230,0.22); border-color:rgba(56,139,253,0.5);">📲 Đồng bộ</button>
+                        <button class="user-switch-btn" id="userActionBtn" onclick="openAuthModal('login')">Đăng nhập</button>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -1661,13 +1664,13 @@
 
             <!-- Bottom Input Dock with Multi-file upload (up to 10 files) & Camera -->
             <footer class="chat-input-container">
-                <!-- Plus Action Menu Popup: 2 compact icon buttons (Files/Album & Camera) -->
+                <!-- Plus Action Menu Popup: 2 compact icon buttons (Album/Picture & Camera) -->
                 <div class="plus-action-menu" id="plusActionMenu">
-                    <button type="button" class="plus-mini-icon-btn" onclick="triggerPickFiles()" title="Tải ảnh hoặc tệp bài tập (Tối đa 10 tệp)">
-                        <span class="icon">📁</span>
-                        <span class="tooltip">Tệp / Ảnh</span>
+                    <button type="button" class="plus-mini-icon-btn" onclick="triggerPickFiles()" title="Mở Album chọn ảnh, video hoặc tệp bài tập (Tối đa 10 tệp)">
+                        <span class="icon">🖼️</span>
+                        <span class="tooltip">Album / Ảnh & Video</span>
                     </button>
-                    <button type="button" class="plus-mini-icon-btn" onclick="triggerCameraCapture()" title="Mở camera chụp ảnh trực tiếp">
+                    <button type="button" class="plus-mini-icon-btn" onclick="triggerCameraCapture()" title="Mở máy ảnh chụp bài tập trực tiếp">
                         <span class="icon">📸</span>
                         <span class="tooltip">Chụp ảnh</span>
                     </button>
@@ -1697,7 +1700,7 @@
                 </div>
 
                 <!-- Inputs for file picker & camera capture -->
-                <input type="file" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx,.txt" style="display:none" onchange="handleFilesSelected(event)">
+                <input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" style="display:none" onchange="handleFilesSelected(event)">
                 <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleFilesSelected(event)">
             </footer>
 
@@ -1706,6 +1709,43 @@
     </div>
 
     <!-- PWA Install Modal Guide -->
+        <!-- Sync Modal: Transfer Account & Sessions to Another Device -->
+    <div class="modal-overlay" id="syncModal">
+        <div class="auth-card-image4" style="max-width: 480px;">
+            <button class="auth-close-x" onclick="closeSyncModal()">✕</button>
+            <div class="auth-card-header">
+                <div class="auth-avatar-p">P</div>
+                <div class="auth-header-text">
+                    <div class="app-sub-title">PHÚC BT</div>
+                    <div class="app-main-title">Đồng bộ sang thiết bị khác</div>
+                </div>
+            </div>
+            <div class="auth-divider"></div>
+            
+            <p style="font-size:13.5px; line-height:1.6; color:#a0b8d5; margin-bottom:14px;">
+                Dữ liệu bài tập của bạn luôn được lưu vĩnh viễn trên máy này. Khi muốn đổi qua điện thoại hoặc máy tính khác, hãy dùng <strong>Mã đồng bộ</strong> bên dưới:
+            </p>
+
+            <div class="auth-field-group">
+                <label class="auth-field-label">1. Mã đồng bộ của tài khoản này (để chuyển đi):</label>
+                <div class="auth-input-wrapper">
+                    <input type="text" class="auth-field-input" id="syncCodeOutput" readonly style="font-family:monospace; font-size:12px; padding-right:85px;" value="">
+                    <button type="button" class="auth-input-toggle-btn" style="width:75px;" onclick="copySyncCode()">Sao chép</button>
+                </div>
+            </div>
+
+            <div class="auth-field-group" style="margin-top:16px;">
+                <label class="auth-field-label">2. Hoặc dán mã từ thiết bị khác vào đây (để nhận):</label>
+                <textarea class="auth-field-input" id="syncCodeInput" rows="2" style="padding:10px; font-family:monospace; font-size:12px; resize:none;" placeholder="Dán mã đồng bộ vào đây..."></textarea>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:18px;">
+                <button type="button" class="btn-auth-submit" style="flex:1;" onclick="applySyncCode()">📲 Đồng bộ ngay</button>
+                <button type="button" class="btn-auth-submit" style="flex:1; background:rgba(25,113,194,0.3); border:1px solid rgba(56,139,253,0.5);" onclick="closeSyncModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="installModal">
         <div class="auth-card-image4" style="max-width: 480px;">
             <button class="auth-close-x" onclick="closeInstallModal()">✕</button>
@@ -1718,10 +1758,10 @@
             </div>
             <div class="auth-divider"></div>
             <p style="font-size:14px; line-height:1.7; color:#c5d4e8;">
-                Bạn có thể cài đặt <strong>PHÚC TOÁN AI</strong> để mở nhanh trên PC và Điện thoại:
+                Bạn có thể cài đặt <strong>PHÚC BT</strong> để mở nhanh trên PC và Điện thoại:
             </p>
             <ul style="margin: 12px 0 18px 20px; font-size:13.5px; line-height: 1.8; color: #a0b8d5;">
-                <li><strong>Trên máy tính (Chrome/Edge):</strong> Bấm vào biểu tượng <strong>Cài đặt</strong> (Install) trên thanh địa chỉ, hoặc chọn menu 3 chấm <code>⋮</code> ➔ <em>"Cài đặt PHÚC TOÁN AI..."</em>.</li>
+                <li><strong>Trên máy tính (Chrome/Edge):</strong> Bấm vào biểu tượng <strong>Cài đặt</strong> (Install) trên thanh địa chỉ, hoặc chọn menu 3 chấm <code>⋮</code> ➔ <em>"Cài đặt PHÚC BT..."</em>.</li>
                 <li><strong>Trên điện thoại Android:</strong> Bấm menu 3 chấm <code>⋮</code> của Chrome ➔ chọn <em>"Cài đặt ứng dụng"</em> hoặc <em>"Thêm vào Màn hình chính"</em>.</li>
                 <li><strong>Trên iPhone/iPad:</strong> Mở Safari ➔ bấm nút <strong>Chia sẻ</strong> (icon ô vuông mũi tên lên) ➔ chọn <em>"Thêm vào MH chính"</em>.</li>
             </ul>
@@ -1804,7 +1844,7 @@
         // Speech synthesis for listening to answers
         let currentUtterance = null;
 
-        // System prompt for PHÚC TOÁN AI (without calculator emojis)
+        // System prompt for PHÚC BT (without calculator emojis)
         const SYSTEM_INSTRUCTION = `Bạn là "PHÚC BT" - trợ lý trí tuệ nhân tạo chuyên sâu về HỌC TẬP, GIẢI BÀI TẬP và RA ĐỀ LUYỆN TẬP cho TẤT CẢ CÁC MÔN HỌC (Toán, Vật lý, Hóa học, Sinh học, Ngữ văn, Tiếng Anh, Lịch sử, Địa lý, Tin học / Lập trình, GDCD, Khoa học tự nhiên, Khoa học xã hội...).
 
 QUY TẮC BẮT BUỘC:
@@ -1846,7 +1886,7 @@ QUY TẮC BẮT BUỘC:
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        showToast('🎉 Đang cài đặt PHÚC TOÁN AI vào thiết bị của bạn!');
+                        showToast('🎉 Đang cài đặt PHÚC BT vào thiết bị của bạn!');
                     }
                     deferredPrompt = null;
                 });
@@ -2084,29 +2124,129 @@ QUY TẮC BẮT BUỘC:
                     showToast('Mật khẩu xác nhận không trùng khớp');
                     return;
                 }
-                if (users[u]) {
-                    showToast('Tên tài khoản này đã tồn tại!');
+                // Case-insensitive check: each username is strictly unique!
+                const existingKey = Object.keys(users).find(k => k.toLowerCase() === u.toLowerCase());
+                if (existingKey) {
+                    showToast(`⚠️ Tên "${u}" đã có người đăng ký rồi! Vui lòng chọn tên khác (ví dụ: ${u}123)`);
                     return;
                 }
+
+                // Register user permanently
                 users[u] = p;
                 localStorage.setItem('phuc_registered_users', JSON.stringify(users));
                 currentUser = u;
+                localStorage.setItem('phuc_current_user', u);
+                saveUserData();
                 loadUserData();
                 closeAuthModal();
                 showToast(`🎉 Đăng ký thành công! Xin chào ${u}`);
             } else {
-                if (users[u] && users[u] !== p) {
-                    showToast('Mật khẩu không chính xác');
+                // Login mode: strictly check if user exists
+                const matchedUser = Object.keys(users).find(k => k.toLowerCase() === u.toLowerCase());
+                if (!matchedUser) {
+                    showToast(`⚠️ Tài khoản "${u}" chưa tồn tại! Vui lòng bấm Đăng ký ngay bên dưới.`);
                     return;
                 }
-                if (!users[u]) {
-                    users[u] = p;
-                    localStorage.setItem('phuc_registered_users', JSON.stringify(users));
+                if (users[matchedUser] !== p) {
+                    showToast('⚠️ Mật khẩu không chính xác! Vui lòng kiểm tra lại.');
+                    return;
                 }
-                currentUser = u;
+
+                // Login successfully and persist forever
+                currentUser = matchedUser;
+                localStorage.setItem('phuc_current_user', currentUser);
+                saveUserData();
                 loadUserData();
                 closeAuthModal();
-                showToast(`Đăng nhập thành công! Xin chào ${u}`);
+                showToast(`Đăng nhập thành công! Xin chào ${currentUser}`);
+            }
+        }
+
+
+        // ================= CROSS-DEVICE SYNC & BACKUP =================
+        function openSyncModal() {
+            closeMobileSidebar();
+            const modal = document.getElementById('syncModal');
+            const output = document.getElementById('syncCodeOutput');
+            const userKey = currentUser || 'guest';
+            
+            let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
+            let userPass = currentUser ? (users[currentUser] || '') : '';
+            
+            const payload = {
+                v: 1,
+                user: currentUser,
+                pass: userPass,
+                sessions: sessions,
+                curId: currentSessionId,
+                time: Date.now()
+            };
+            
+            try {
+                const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+                output.value = encoded;
+            } catch (e) {
+                output.value = JSON.stringify(payload);
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeSyncModal() {
+            document.getElementById('syncModal').classList.remove('active');
+        }
+
+        function copySyncCode() {
+            const output = document.getElementById('syncCodeOutput');
+            if (!output || !output.value) return;
+            navigator.clipboard.writeText(output.value).then(() => {
+                showToast('📋 Đã sao chép mã đồng bộ vào bộ nhớ tạm!');
+            }).catch(() => {
+                output.select();
+                document.execCommand('copy');
+                showToast('📋 Đã sao chép mã đồng bộ!');
+            });
+        }
+
+        function applySyncCode() {
+            const input = document.getElementById('syncCodeInput');
+            const val = input ? input.value.trim() : '';
+            if (!val) {
+                showToast('Vui lòng dán mã đồng bộ vào ô số 2');
+                return;
+            }
+
+            try {
+                let jsonStr;
+                try {
+                    jsonStr = decodeURIComponent(escape(atob(val)));
+                } catch (e) {
+                    jsonStr = val;
+                }
+                const data = JSON.parse(jsonStr);
+                if (!data || !Array.isArray(data.sessions)) {
+                    throw new Error('Dữ liệu không hợp lệ');
+                }
+
+                if (data.user) {
+                    let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
+                    if (data.pass) {
+                        users[data.user] = data.pass;
+                        localStorage.setItem('phuc_registered_users', JSON.stringify(users));
+                    }
+                    currentUser = data.user;
+                    localStorage.setItem('phuc_current_user', currentUser);
+                }
+
+                sessions = data.sessions;
+                currentSessionId = data.curId || (sessions[0] ? sessions[0].id : null);
+                saveUserData();
+                loadUserData();
+                closeSyncModal();
+                input.value = '';
+                showToast(`🎉 Đồng bộ thành công! Đã tải ${sessions.length} cuộc hội thoại bài tập.`);
+            } catch (err) {
+                showToast('⚠️ Mã đồng bộ không hợp lệ hoặc bị lỗi!');
             }
         }
 
@@ -2175,7 +2315,7 @@ QUY TẮC BẮT BUỘC:
             if (sessions.length <= 1) {
                 sessions[0].messages = [{
                     role: 'model',
-                    text: 'Chào bạn! Mình là **PHÚC TOÁN AI** ✨\n\nBạn cần giải bài toán nào hãy gửi cho mình nhé!'
+                    text: 'Chào bạn! Mình là **PHÚC BT** ✨\n\nBạn cần giải bài toán nào hãy gửi cho mình nhé!'
                 }];
                 sessions[0].title = 'Cuộc trò chuyện mới';
             } else {
@@ -2416,7 +2556,7 @@ QUY TẮC BẮT BUỘC:
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Phuc_Toan_AI_LoiGiai_${Date.now()}.txt`;
+            a.download = `Phuc_BT_LoiGiai_${Date.now()}.txt`;
             a.click();
             URL.revokeObjectURL(url);
             showToast('Đã xuất tài liệu');
@@ -2428,7 +2568,7 @@ QUY TẮC BẮT BUỘC:
             const clone = bubble.cloneNode(true);
             const bar = clone.querySelector('.ai-action-bar');
             if (bar) bar.remove();
-            const subject = encodeURIComponent('Lời giải từ PHÚC TOÁN AI');
+            const subject = encodeURIComponent('Lời giải từ PHÚC BT');
             const body = encodeURIComponent(clone.innerText.trim());
             window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
         }
@@ -2658,7 +2798,7 @@ QUY TẮC BẮT BUỘC:
             } catch (err) {
                 removeTypingIndicator(typingId);
                 console.error('API Error:', err);
-                const errMsg = `Xin lỗi bạn, PHÚC TOÁN AI gặp lỗi khi xử lý: ${err.message || 'Lỗi mạng hoặc API'}. Bạn vui lòng thử lại nhé!`;
+                const errMsg = `Xin lỗi bạn, PHÚC BT gặp lỗi khi xử lý: ${err.message || 'Lỗi mạng hoặc API'}. Bạn vui lòng thử lại nhé!`;
                 appendMessageToDOM('model', errMsg, null, session.messages.length);
             } finally {
                 isGenerating = false;
@@ -2896,16 +3036,16 @@ QUY TẮC BẮT BUỘC:
                 return;
             }
 
-            let content = `# Cuộc hội thoại với PHÚC TOÁN AI - ${new Date().toLocaleString('vi-VN')}\n\n`;
+            let content = `# Cuộc hội thoại với PHÚC BT - ${new Date().toLocaleString('vi-VN')}\n\n`;
             session.messages.forEach(m => {
-                content += `### ${m.role === 'user' ? '👤 BẠN' : 'PHÚC TOÁN AI'}:\n${m.text}\n\n---\n\n`;
+                content += `### ${m.role === 'user' ? '👤 BẠN' : 'PHÚC BT'}:\n${m.text}\n\n---\n\n`;
             });
 
             const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Phuc_Toan_AI_${Date.now()}.md`;
+            a.download = `Phuc_BT_${Date.now()}.md`;
             a.click();
             URL.revokeObjectURL(url);
             showToast('Đã xuất cuộc trò chuyện thành công!');
