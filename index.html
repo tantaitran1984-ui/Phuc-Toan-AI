@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PHÚC TOÁN AI - Trợ Lý Giải Toán & Trò Chuyện Thông Minh</title>
+    <title>PHÚC BT - Trợ Lý Học Tập & Giải Bài Tập Đa Môn</title>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a192f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PHÚC TOÁN AI">
+    <meta name="apple-mobile-web-app-title" content="PHÚC BT">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="icon" type="image/png" href="favicon.png">
 
@@ -1384,36 +1384,138 @@
                 border: none;
             }
 
+            .app-window {
+                width: 100vw;
+                height: 100vh;
+                height: 100dvh;
+                max-height: 100vh;
+                max-height: 100dvh;
+                border-radius: 0;
+                border: none;
+            }
+
             .sidebar {
                 position: absolute;
-                left: -290px;
+                left: -300px;
                 top: 0;
                 bottom: 0;
                 height: 100%;
-                width: 270px !important;
-                min-width: 270px !important;
+                width: 285px !important;
+                min-width: 285px !important;
                 padding: 22px 18px !important;
                 opacity: 1 !important;
-                overflow: visible !important;
+                overflow-y: auto !important;
                 pointer-events: auto !important;
-                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
-                z-index: 100;
+                box-shadow: 12px 0 35px rgba(0, 0, 0, 0.85);
+                z-index: 30;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .sidebar.mobile-open {
                 left: 0 !important;
             }
 
-            .sidebar-backdrop {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,0.55);
-                z-index: 99;
+            /* Elevated input dock on mobile to avoid navigation bar & home indicator */
+            .chat-input-container {
+                padding: 8px 12px 24px !important;
+                padding-bottom: max(24px, env(safe-area-inset-bottom, 24px)) !important;
+                margin-bottom: 6px !important;
             }
-            .sidebar-backdrop.active {
-                display: block;
+
+            .plus-action-menu {
+                bottom: 80px;
+                left: 12px;
+                right: 12px;
+                min-width: auto;
             }
+
+            /* Backdrop placed inside app-window */
+        .sidebar-backdrop {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(3, 8, 18, 0.72);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 28;
+            cursor: pointer;
+            transition: opacity 0.25s ease;
+        }
+        .sidebar-backdrop.active {
+            display: block;
+        }
+
+        /* Plus Action Menu Popup (Gemini Style) */
+        .plus-action-menu {
+            position: absolute;
+            bottom: 74px;
+            left: 26px;
+            background: rgba(13, 24, 43, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(56, 139, 253, 0.4);
+            border-radius: 18px;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 20px rgba(25, 113, 194, 0.25);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 150;
+            min-width: 250px;
+            animation: menuPopAnim 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        @keyframes menuPopAnim {
+            from { opacity: 0; transform: translateY(10px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .plus-action-menu.active {
+            display: flex;
+        }
+
+        .plus-action-item {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+            transition: background 0.18s, transform 0.15s;
+            width: 100%;
+        }
+
+        .plus-action-item:hover {
+            background: rgba(34, 139, 230, 0.22);
+            transform: translateX(2px);
+        }
+
+        .plus-action-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .plus-action-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plus-action-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #e6f1ff;
+        }
+
+        .plus-action-sub {
+            font-size: 11px;
+            color: #8da4c4;
+            margin-top: 2px;
+        }
 
             .chat-header {
                 padding: 10px 14px;
@@ -1443,8 +1545,7 @@
 </head>
 <body>
 
-    <!-- Mobile sidebar backdrop -->
-    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+
 
     <!-- Ambient floating particles canvas -->
     <canvas class="ambient-canvas" id="ambientCanvas"></canvas>
@@ -1452,12 +1553,15 @@
     <!-- 3D Main Window Container -->
     <div class="app-window" id="appWindow">
 
+        <!-- Mobile sidebar backdrop (inside app-window for proper z-index stacking) -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+
         <!-- ================= SIDEBAR ================= -->
         <aside class="sidebar" id="sidebar">
             <!-- Brand header in sidebar (Image 3): Squircle Avatar 'P' + 'PHÚC TOÁN AI' -->
             <div class="sidebar-brand-row">
-                <div class="avatar-box" title="PHÚC TOÁN AI">P</div>
-                <div class="sidebar-brand-name">PHÚC TOÁN AI</div>
+                <div class="avatar-box" title="PHÚC BT">PB</div>
+                <div class="sidebar-brand-name">PHÚC BT</div>
             </div>
 
             <!-- Search input -->
@@ -1502,19 +1606,16 @@
                         ☰
                     </button>
                     <div class="app-name">
-                        PHÚC TOÁN AI
+                        PHÚC BT
                     </div>
                 </div>
 
                 <div class="chat-header-actions">
-                    <button class="header-action-pill" onclick="toggleTheme()" id="themeBtn">
+                    <button class="header-action-pill" onclick="toggleTheme()" id="themeBtn" title="Chuyển giao diện Sáng / Tối">
                         <span id="themeIcon">☀</span> <span class="txt" id="themeText">Giao diện sáng</span>
                     </button>
-                    <button class="header-action-pill" onclick="exportChat()" title="Xuất toàn bộ nội dung trò chuyện">
-                        📥 <span class="txt">Xuất chat</span>
-                    </button>
-                    <button class="header-action-pill" onclick="handleLogout()" title="Đăng xuất tài khoản">
-                        🚪 <span class="txt">Đăng xuất</span>
+                    <button class="header-action-pill" id="headerAuthBtn" onclick="handleHeaderAuthClick()" title="Tài khoản">
+                        <span id="headerAuthIcon">👤</span> <span class="txt" id="headerAuthText">Đăng nhập</span>
                     </button>
                 </div>
             </header>
@@ -1541,33 +1642,52 @@
                 </div>
             </div>
 
-            <!-- Bottom Input Dock with Multi-file upload (up to 10 files) -->
+            <!-- Bottom Input Dock with Multi-file upload (up to 10 files) & Camera -->
             <footer class="chat-input-container">
+                <!-- Plus Action Menu Popup (Album / File / Camera) -->
+                <div class="plus-action-menu" id="plusActionMenu">
+                    <button type="button" class="plus-action-item" onclick="triggerPickFiles()">
+                        <span class="plus-action-icon">📁</span>
+                        <div class="plus-action-info">
+                            <div class="plus-action-title">Tệp & Album ảnh</div>
+                            <div class="plus-action-sub">Tải lên tối đa 10 ảnh hoặc tài liệu</div>
+                        </div>
+                    </button>
+                    <button type="button" class="plus-action-item" onclick="triggerCameraCapture()">
+                        <span class="plus-action-icon">📸</span>
+                        <div class="plus-action-info">
+                            <div class="plus-action-title">Chụp ảnh trực tiếp</div>
+                            <div class="plus-action-sub">Mở camera chụp bài tập ngay</div>
+                        </div>
+                    </button>
+                </div>
+
                 <!-- Multi-files preview carousel (up to 10 files) -->
                 <div class="multi-files-preview" id="multiFilesPreview">
                     <!-- Preview cards dynamically rendered here -->
                 </div>
 
                 <div class="input-pill-box">
-                    <button class="btn-attach" onclick="document.getElementById('fileInput').click()" title="Đính kèm tối đa 10 hình ảnh hoặc tệp bài toán">
+                    <button type="button" class="btn-attach" id="btnAttach" onclick="togglePlusActionMenu(event)" title="Thêm ảnh, tệp hoặc chụp ảnh (tối đa 10 tệp)">
                         +
                         <span class="attach-count-badge" id="attachCountBadge">0</span>
                     </button>
 
                     <div class="input-center">
                         <textarea class="chat-textarea" id="chatInput" rows="1" 
-                                  placeholder="Nhập câu hỏi hoặc yêu cầu của bạn..."
+                                  placeholder="Hỏi PHÚC BT hoặc gửi bài tập mọi môn..."
                                   onkeydown="handleKeyDown(event)"
                                   oninput="autoResizeTextarea(this)"></textarea>
                     </div>
 
-                    <button class="btn-send" id="btnSend" onclick="handleSend()">
+                    <button type="button" class="btn-send" id="btnSend" onclick="handleSend()" title="Gửi tin nhắn">
                         Gửi
                     </button>
                 </div>
 
-                <!-- Input allows multiple files up to 10 -->
-                <input type="file" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleFilesSelected(event)">
+                <!-- Inputs for file picker & camera capture -->
+                <input type="file" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx,.txt" style="display:none" onchange="handleFilesSelected(event)">
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleFilesSelected(event)">
             </footer>
 
         </main>
@@ -1579,9 +1699,9 @@
         <div class="auth-card-image4" style="max-width: 480px;">
             <button class="auth-close-x" onclick="closeInstallModal()">✕</button>
             <div class="auth-card-header">
-                <div class="auth-avatar-p">P</div>
+                <div class="auth-avatar-p">PB</div>
                 <div class="auth-header-text">
-                    <div class="app-sub-title">PHÚC TOÁN AI</div>
+                    <div class="app-sub-title">PHÚC BT</div>
                     <div class="app-main-title">Cài đặt ứng dụng</div>
                 </div>
             </div>
@@ -1603,9 +1723,9 @@
         <div class="auth-card-image4">
             <button class="auth-close-x" onclick="closeAuthModal()">✕</button>
             <div class="auth-card-header">
-                <div class="auth-avatar-p">P</div>
+                <div class="auth-avatar-p">PB</div>
                 <div class="auth-header-text">
-                    <div class="app-sub-title">PHÚC TOÁN AI</div>
+                    <div class="app-sub-title">PHÚC BT</div>
                     <div class="app-main-title" id="authMainTitle">Đăng nhập tài khoản</div>
                 </div>
             </div>
@@ -1647,9 +1767,9 @@
 
     <script>
         // Obfuscated key to prevent GitHub Push Protection scanner from blocking upload
-        const API_KEY = atob('QVEuQWI4Uk42S1ZxN0FlQXhvTXd4VjR2bUU5aG4wdUU3ZXktVW12WVktVXNYZ2kzOEItN0E=');
-        const PRIMARY_MODEL = 'gemini-3.8-flash';
-        const FALLBACK_MODEL = 'gemini-2.5-flash';
+        const API_KEY = atob('QVEuQWI4Uk42SVJteGxNLWJtQWdzRk04ajV6V21jalRCWlVzVm5VT01MekJXMk5lWmJyeXc=');
+        const PRIMARY_MODEL = 'gemini-3.5-flash';
+        const FALLBACK_MODEL = 'gemini-3.5-flash-lite';
 
         // PWA prompt
         let deferredPrompt = null;
@@ -1674,24 +1794,27 @@
         let currentUtterance = null;
 
         // System prompt for PHÚC TOÁN AI (without calculator emojis)
-        const SYSTEM_INSTRUCTION = `Bạn là "PHÚC TOÁN AI" - trợ lý trí tuệ nhân tạo chuyên sâu về TOÁN HỌC từ cơ bản đến nâng cao (Đại số, Hình học, Giải tích, Phương trình, Lượng giác, Xác suất thống kê, Toán tư duy, Toán đố lời văn...).
+        const SYSTEM_INSTRUCTION = `Bạn là "PHÚC BT" - trợ lý trí tuệ nhân tạo chuyên sâu về HỌC TẬP, GIẢI BÀI TẬP và RA ĐỀ LUYỆN TẬP cho TẤT CẢ CÁC MÔN HỌC (Toán, Vật lý, Hóa học, Sinh học, Ngữ văn, Tiếng Anh, Lịch sử, Địa lý, Tin học / Lập trình, GDCD, Khoa học tự nhiên, Khoa học xã hội...).
 
 QUY TẮC BẮT BUỘC:
 1. XỬ LÝ HÌNH ẢNH HOẶC TẬP TIN:
-   - Hãy QUAN SÁT CỰC KỲ KỸ CÀNG tất cả các bức ảnh/tập tin được gửi. Tự động nhận dạng toàn bộ chữ viết, đề bài, biểu thức toán, hình học hoặc bảng số liệu.
+   - Hãy QUAN SÁT CỰC KỲ KỸ CÀNG tất cả các bức ảnh/tập tin được gửi. Tự động nhận dạng toàn bộ chữ viết, đề bài, biểu thức, hình vẽ, sơ đồ hoặc bảng biểu.
    - Nhắc lại rõ ràng: "📝 **Đề bài nhận diện được:** [Nội dung đề bài]".
-2. GIẢI CHI TIẾT TỪNG BƯỚC:
-   - Trình bày mạch lạc, đánh số từng Bước 1, Bước 2, Bước 3...
-   - Giải thích cặn kẽ bản chất và phương pháp để người đọc hiểu dễ dàng nhất.
-3. CÔNG THỨC TOÁN HỌC CHUẨN:
-   - Dùng KaTeX LaTeX chuẩn: $công_thức$ cho inline math, và $$công_thức$$ cho display math.
-   - Tuyệt đối KHÔNG viết tiếng Việt có dấu trực tiếp bên trong dấu $...$ (nếu cần ghi chữ trong công thức, dùng \\text{chữ} hoặc viết ra ngoài dấu $).
-4. ĐÁP SỐ CUỐI CÙNG:
-   - Luôn chốt đáp số rõ ràng, nổi bật ở cuối bài bằng: **ĐÁP SỐ:** hoặc **KẾT LUẬN:**.
-5. PHONG CÁCH GIAO TIẾP:
-   - Xưng là "PHÚC TOÁN AI" hoặc "mình", gọi người dùng là "bạn".
+
+2. GIẢI BÀI TẬP CHI TIẾT TỪNG BƯỚC:
+   - Trình bày bài giải mạch lạc, đánh số từng Bước 1, Bước 2, Bước 3...
+   - Giải thích cặn kẽ bản chất, công thức và phương pháp giải để người đọc hiểu dễ dàng nhất.
+   - Dùng KaTeX LaTeX chuẩn: $công_thức$ cho inline math, và $$công_thức$$ cho display math. Tuyệt đối KHÔNG viết tiếng Việt có dấu trực tiếp bên trong dấu $...$ (nếu cần ghi chữ trong công thức, dùng 	ext{chữ} hoặc viết ra ngoài dấu $).
+   - Luôn chốt đáp số nổi bật ở cuối bài bằng: **ĐÁP SỐ:** hoặc **KẾT LUẬN:**.
+
+3. RA ĐỀ BÀI THEO YÊU CẦU:
+   - Khi người dùng yêu cầu ra đề bài (ví dụ: "cho mình 5 câu trắc nghiệm Hoá", "ra đề toán hình lớp 9", "cho bài tập Tiếng Anh thì hiện tại hoàn thành"...), PHÚC BT lập tức biên soạn đề bài chuẩn xác, phân loại độ khó rõ ràng (Nhận biết, Thông hiểu, Vận dụng), kèm đáp án và lời giải chi tiết khi được yêu cầu.
+
+4. PHẠM VI TRẢ LỜI & GIỚI HẠN BẮT BUỘC:
+   - PHÚC BT CHỈ giải quyết các vấn đề liên quan đến HỌC TẬP, GIẢI BÀI TẬP, KIẾN THỨC MÔN HỌC hoặc RA ĐỀ BÀI LUYỆN TẬP.
+   - Nếu người dùng hỏi những câu hỏi ngoài lề không liên quan đến học tập hoặc bài tập (ví dụ chuyện phiếm cá nhân, "tôi có đẹp trai không", hỏi việc đời tư không dính dáng đến kiến thức môn học...), bạn hãy lịch sự từ chối ngắn gọn: "Xin lỗi bạn, PHÚC BT là trợ lý chuyên giải bài tập và hỗ trợ học tập các môn học. Bạn hãy gửi bài tập hoặc yêu cầu học tập để mình hỗ trợ nhé!"
    - Tuyệt đối KHÔNG dùng icon máy tính trong câu trả lời.
-   - Luôn lịch sự, thân thiện, trả lời bằng tiếng Việt chuẩn xác.`;
+   - Luôn thân thiện, chuẩn xác, xưng là "PHÚC BT" hoặc "mình", gọi người dùng là "bạn".`;
 
         // ================= SERVICE WORKER & PWA INSTALL =================
         if ('serviceWorker' in navigator) {
@@ -1770,6 +1893,68 @@ QUY TẮC BẮT BUỘC:
         }, { passive: true });
 
         // ================= USER AUTHENTICATION =================
+
+        // ================= PLUS ACTION MENU (FILE & CAMERA) =================
+        function togglePlusActionMenu(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('plusActionMenu');
+            if (menu) menu.classList.toggle('active');
+        }
+
+        function closePlusActionMenu() {
+            const menu = document.getElementById('plusActionMenu');
+            if (menu) menu.classList.remove('active');
+        }
+
+        function triggerPickFiles() {
+            closePlusActionMenu();
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) fileInput.click();
+        }
+
+        function triggerCameraCapture() {
+            closePlusActionMenu();
+            const camInput = document.getElementById('cameraInput');
+            if (camInput) camInput.click();
+        }
+
+        // Close plus action menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('plusActionMenu');
+            const btn = document.getElementById('btnAttach');
+            if (menu && menu.classList.contains('active')) {
+                if (!menu.contains(e.target) && (!btn || !btn.contains(e.target))) {
+                    menu.classList.remove('active');
+                }
+            }
+        });
+
+        // ================= DYNAMIC HEADER AUTH BUTTON =================
+        function updateHeaderAuthUI() {
+            const btn = document.getElementById('headerAuthBtn');
+            const icon = document.getElementById('headerAuthIcon');
+            const txt = document.getElementById('headerAuthText');
+            if (!btn || !icon || !txt) return;
+
+            if (currentUser) {
+                icon.textContent = '🚪';
+                txt.textContent = 'Đăng xuất';
+                btn.title = `Đang đăng nhập: ${currentUser} (Bấm để đăng xuất)`;
+            } else {
+                icon.textContent = '👤';
+                txt.textContent = 'Đăng nhập';
+                btn.title = 'Bấm để đăng nhập hoặc đăng ký';
+            }
+        }
+
+        function handleHeaderAuthClick() {
+            if (currentUser) {
+                handleLogout();
+            } else {
+                openAuthModal('login');
+            }
+        }
+
         function loadUserData() {
             const userKey = currentUser || 'guest';
             const raw = localStorage.getItem(`phuc_sessions_${userKey}`);
@@ -1805,7 +1990,7 @@ QUY TẮC BẮT BUỘC:
                     messages: [
                         {
                             role: 'model',
-                            text: 'Chào bạn! Mình là **PHÚC TOÁN AI** ✨\n\nBạn cần giải bài toán nào hay có đề bài hình ảnh cứ gửi ngay cho mình nhé!'
+                            text: 'Chào bạn! Mình là **PHÚC BT** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
                         }
                     ],
                     updatedAt: Date.now()
@@ -1816,6 +2001,7 @@ QUY TẮC BẮT BUỘC:
                 currentSessionId = sessions[0].id;
             }
 
+            updateHeaderAuthUI();
             renderSessionsList();
             renderCurrentMessages();
         }
@@ -1943,6 +2129,7 @@ QUY TẮC BẮT BUỘC:
         }
 
         function createNewChat() {
+            closeMobileSidebar();
             const newId = 'sess_' + Date.now();
             sessions.unshift({
                 id: newId,
@@ -1950,21 +2137,24 @@ QUY TẮC BẮT BUỘC:
                 messages: [
                     {
                         role: 'model',
-                        text: 'Chào bạn! Mình là **PHÚC TOÁN AI** ✨\n\nBạn cần giải bài toán nào hay có câu hỏi gì hãy gửi cho mình nhé!'
+                        text: 'Chào bạn! Mình là **PHÚC BT** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
                     }
                 ],
                 updatedAt: Date.now()
             });
             currentSessionId = newId;
             saveUserData();
+            updateHeaderAuthUI();
             renderSessionsList();
             renderCurrentMessages();
             showToast('Đã tạo cuộc hội thoại mới');
         }
 
         function switchSession(id) {
+            closeMobileSidebar();
             currentSessionId = id;
             saveUserData();
+            updateHeaderAuthUI();
             renderSessionsList();
             renderCurrentMessages();
         }
@@ -1984,6 +2174,7 @@ QUY TẮC BẮT BUỘC:
                 }
             }
             saveUserData();
+            updateHeaderAuthUI();
             renderSessionsList();
             renderCurrentMessages();
             showToast('Đã xoá cuộc hội thoại');
@@ -2071,7 +2262,7 @@ QUY TẮC BẮT BUỘC:
                 const msgIdSafe = `ai_msg_${idx}`;
                 
                 row.innerHTML = `
-                    <div class="msg-sender-label">PHÚC TOÁN AI</div>
+                    <div class="msg-sender-label">PHÚC BT</div>
                     <div class="msg-bubble-ai" id="${msgIdSafe}">
                         ${parsedContent}
                         
@@ -2307,7 +2498,7 @@ QUY TẮC BẮT BUỘC:
             row.className = 'msg-row ai-row';
             row.id = id;
             row.innerHTML = `
-                <div class="msg-sender-label">PHÚC TOÁN AI</div>
+                <div class="msg-sender-label">PHÚC BT</div>
                 <div class="msg-bubble-ai">
                     <div class="typing-wave">
                         <span></span><span></span><span></span>
@@ -2519,38 +2710,51 @@ QUY TẮC BẮT BUỘC:
 
         async function callGeminiAPI(modelName, contents) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
-            
-            const payload = {
-                system_instruction: {
-                    parts: [{ text: SYSTEM_INSTRUCTION }]
-                },
-                contents: contents,
-                generationConfig: {
-                    temperature: 0.2,
-                    topP: 0.95,
-                    maxOutputTokens: 8192
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 28000);
+
+            try {
+                const payload = {
+                    system_instruction: {
+                        parts: [{ text: SYSTEM_INSTRUCTION }]
+                    },
+                    contents: contents,
+                    generationConfig: {
+                        temperature: 0.25,
+                        topP: 0.95,
+                        maxOutputTokens: 8192
+                    }
+                };
+
+                let response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    if (modelName !== FALLBACK_MODEL) {
+                        console.warn(`Model ${modelName} lỗi (${response.status}), đang chuyển sang ${FALLBACK_MODEL}...`);
+                        return await callGeminiAPI(FALLBACK_MODEL, contents);
+                    }
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData?.error?.message || `HTTP ${response.status}`);
                 }
-            };
 
-            let response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
+                const data = await response.json();
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!text) throw new Error('Không nhận được phản hồi từ AI');
+                return text;
+            } catch (err) {
+                clearTimeout(timeoutId);
                 if (modelName !== FALLBACK_MODEL) {
-                    console.warn(`Model ${modelName} failed, trying fallback ${FALLBACK_MODEL}...`);
+                    console.warn(`Model ${modelName} gặp sự cố (${err.message}), đang thử lại với ${FALLBACK_MODEL}...`);
                     return await callGeminiAPI(FALLBACK_MODEL, contents);
                 }
-                const errData = await response.json();
-                throw new Error(errData?.error?.message || `HTTP ${response.status}`);
+                throw err;
             }
-
-            const data = await response.json();
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (!text) throw new Error('Không nhận được phản hồi từ AI');
-            return text;
         }
 
         // ================= MULTI-FILE ATTACHMENT (UP TO 10 FILES) =================

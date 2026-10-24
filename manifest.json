@@ -1,8 +1,8 @@
 {
-    "id": "phuc-ai-math-app",
-    "name": "Phúc AI - Trợ Lý Giải Toán",
-    "short_name": "Phúc AI",
-    "description": "Ứng dụng AI Phúc giải toán bằng văn bản và hình ảnh thông minh",
+    "id": "phuc-bt-app",
+    "name": "PHÚC BT - Trợ Lý Học Tập & Giải Bài Tập",
+    "short_name": "PHÚC BT",
+    "description": "Ứng dụng PHÚC BT hỗ trợ học tập, giải bài tập và ra đề luyện tập mọi môn học thông minh",
     "start_url": "./index.html",
     "scope": "./",
     "display": "standalone",

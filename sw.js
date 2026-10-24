@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phuc-toan-ai-v3';
+const CACHE_NAME = 'phuc-bt-v4';
 const ASSETS = [
     './favicon.png',
     './icon-192.png',
