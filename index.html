@@ -1595,6 +1595,62 @@
                 left: 14px !important;
             }
         }
+    
+        /* Mode selector capsule button beside Send */
+        .mode-capsule-btn {
+            background: rgba(25, 113, 194, 0.18);
+            border: 1px solid rgba(56, 139, 253, 0.45);
+            border-radius: 12px;
+            padding: 9px 13px;
+            color: #74c0fc;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            flex-shrink: 0;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .mode-capsule-btn:hover {
+            background: rgba(34, 139, 230, 0.35);
+            border-color: #74c0fc;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        body.light-mode .mode-capsule-btn {
+            background: #e7f5ff;
+            border-color: #74c0fc;
+            color: #1971c2;
+        }
+
+        /* Stop button (square) during AI generation */
+        .btn-send.stop-mode {
+            background: #e03131 !important;
+            box-shadow: 0 4px 14px rgba(224, 49, 49, 0.55) !important;
+            padding: 10px 18px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-send.stop-mode:hover {
+            background: #c92a2a !important;
+            transform: scale(1.05);
+        }
+
+        .stop-square-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background: #ffffff;
+            border-radius: 3px;
+        }
+
     </style>
 </head>
 <body>
@@ -1646,7 +1702,6 @@
                 <div class="user-tag-row">
                     <div class="user-tag" id="userTag">Chưa đăng nhập</div>
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <button class="user-switch-btn" id="userMyCodeBtn" onclick="openMyCodeModal()" title="Xem mã tài khoản để đăng nhập máy khác" style="display:none; background:rgba(34,139,230,0.22); border-color:rgba(56,139,253,0.5);">🔑 Mã TK</button>
                         <button class="user-switch-btn" id="userActionBtn" onclick="openAuthModal('login')">Đăng nhập</button>
                     </div>
                 </div>
@@ -1669,10 +1724,10 @@
 
                 <div class="chat-header-actions">
                     <button class="header-action-pill" onclick="toggleTheme()" id="themeBtn" title="Chuyển giao diện Sáng / Tối">
-                        <span id="themeIcon">☀</span> <span class="txt" id="themeText">Giao diện sáng</span>
+                        <span class="txt" id="themeText">Giao diện sáng</span>
                     </button>
                     <button class="header-action-pill" id="headerAuthBtn" onclick="handleHeaderAuthClick()" title="Tài khoản">
-                        <span id="headerAuthIcon">👤</span> <span class="txt" id="headerAuthText">Đăng nhập</span>
+                        <span class="txt" id="headerAuthText">Đăng nhập</span>
                     </button>
                 </div>
             </header>
@@ -1731,13 +1786,19 @@
                                   oninput="autoResizeTextarea(this)"></textarea>
                     </div>
 
-                    <button type="button" class="btn-send" id="btnSend" onclick="handleSend()" title="Gửi tin nhắn">
+                    <!-- 3 Chế độ xếp từ nhanh đến chậm: Nhanh -> Bình thường -> Suy nghĩ -->
+                    <button type="button" class="mode-capsule-btn" id="btnModeToggle" onclick="cycleAnswerMode()" title="Chế độ trả lời: Nhanh (Trl nhanh) / Bình thường / Suy nghĩ">
+                        <span id="modeLabel">Nhanh</span>
+                    </button>
+
+                    <!-- Nút Gửi / Nút hình vuông huỷ khi AI đang trả lời -->
+                    <button type="button" class="btn-send" id="btnSend" onclick="handleSendOrStop()" title="Gửi tin nhắn">
                         Gửi
                     </button>
                 </div>
 
                 <!-- Inputs for file picker & camera capture -->
-                <input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf,.doc,.docx,.txt" style="display:none" onchange="handleFilesSelected(event)">
+                <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/webp,image/gif,image/heic,.jpg,.jpeg,.png,.webp" style="display:none" onchange="handleFilesSelected(event)">
                 <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleFilesSelected(event)">
             </footer>
 
@@ -1746,33 +1807,7 @@
     </div>
 
     <!-- PWA Install Modal Guide -->
-        <!-- My Code Modal (Xem mã tài khoản của bạn) -->
-    <div class="modal-overlay" id="myCodeModal">
-        <div class="auth-card-image4" style="max-width: 480px;">
-            <button class="auth-close-x" onclick="closeMyCodeModal()">✕</button>
-            <div class="auth-card-header">
-                <div class="auth-avatar-p">P</div>
-                <div class="auth-header-text">
-                    <div class="app-sub-title">PHÚC BT</div>
-                    <div class="app-main-title">Mã tài khoản cá nhân</div>
-                </div>
-            </div>
-            <div class="auth-divider"></div>
-            
-            <p style="font-size:13.5px; line-height:1.6; color:#a0b8d5; margin-bottom:14px;">
-                Tài khoản <span id="myCodeUsername" style="color:#00e5ff; font-weight:700;"></span>: Bạn có thể đăng nhập bình thường bằng Tên & Mật khẩu trên mọi thiết bị. Hoặc dùng <strong>Mã tài khoản</strong> dưới đây để đăng nhập nhanh trong 1 giây:
-            </p>
-
-            <div class="auth-field-group">
-                <div class="auth-input-wrapper">
-                    <input type="text" class="auth-field-input" id="myCodeOutput" readonly style="font-family:monospace; font-size:12px; padding-right:85px;" value="">
-                    <button type="button" class="auth-input-toggle-btn" style="width:75px;" onclick="copyMyCode()">Sao chép</button>
-                </div>
-            </div>
-
-            <button type="button" class="btn-auth-submit" style="margin-top:16px;" onclick="closeMyCodeModal()">Đã hiểu</button>
-        </div>
-    </div>
+    
 
     <div class="modal-overlay" id="installModal">
         <div class="auth-card-image4" style="max-width: 480px;">
@@ -1810,11 +1845,10 @@
             </div>
             <div class="auth-divider"></div>
 
-            <!-- 3 Switchable Methods Tabs -->
+            <!-- 2 Switchable Methods Tabs: Đăng nhập & Đăng ký -->
             <div class="auth-tabs-row">
-                <button type="button" class="auth-tab-btn active" id="tabLogin" onclick="switchAuthMode('login')">👤 Đăng nhập</button>
-                <button type="button" class="auth-tab-btn" id="tabRegister" onclick="switchAuthMode('register')">📝 Đăng ký</button>
-                <button type="button" class="auth-tab-btn" id="tabCode" onclick="switchAuthMode('code')">🔑 Dùng Mã</button>
+                <button type="button" class="auth-tab-btn active" id="tabLogin" onclick="switchAuthMode('login')">Đăng nhập</button>
+                <button type="button" class="auth-tab-btn" id="tabRegister" onclick="switchAuthMode('register')">Đăng ký</button>
             </div>
 
             <!-- Standard Username / Password Container -->
@@ -1847,16 +1881,7 @@
                 </div>
             </div>
 
-            <!-- Quick Code Login Container -->
-            <div id="codeAuthFields" style="display: none;">
-                <div class="auth-field-group">
-                    <label class="auth-field-label">Dán Mã Tài Khoản của bạn vào đây:</label>
-                    <textarea class="auth-field-input" id="authCodeInput" rows="3" style="padding:10px; font-family:monospace; font-size:12px; resize:none;" placeholder="Dán mã tài khoản để đăng nhập ngay lập tức..."></textarea>
-                </div>
-                <div style="font-size:12px; color:#8da4c4; line-height:1.5; margin-bottom:14px;">
-                    ✨ Phương thức này giúp bạn đăng nhập và khôi phục 100% bài tập trong 1 giây mà không cần nhớ mật khẩu.
-                </div>
-            </div>
+
 
             <button class="btn-auth-submit" id="btnAuthSubmit" onclick="handleAuthSubmit()">Đăng nhập</button>
 
@@ -1874,6 +1899,60 @@
         const API_KEY = atob('QVEuQWI4Uk42SVJteGxNLWJtQWdzRk04ajV6V21jalRCWlVzVm5VT01MekJXMk5lWmJyeXc=');
         const PRIMARY_MODEL = 'gemini-3.5-flash';
         const FALLBACK_MODEL = 'gemini-3.5-flash-lite';
+
+        // 3 Chế độ trả lời xếp theo thứ tự từ nhanh đến chậm: Nhanh -> Bình thường -> Suy nghĩ
+        const ANSWER_MODES = [
+            {
+                id: 'fast',
+                label: 'Nhanh',
+                model: 'gemini-3.5-flash-lite',
+                fallback: 'gemini-3.5-flash',
+                temp: 0.15,
+                extraSystem: '\n5. CHẾ ĐỘ NHANH: Trả lời chớp nhoáng, cô đọng, đi thẳng vào đáp án và cách giải ngắn gọn nhất.'
+            },
+            {
+                id: 'normal',
+                label: 'Bình thường',
+                model: 'gemini-3.5-flash',
+                fallback: 'gemini-3.5-flash-lite',
+                temp: 0.25,
+                extraSystem: ''
+            },
+            {
+                id: 'deep',
+                label: 'Suy nghĩ',
+                model: 'gemini-3.5-flash',
+                fallback: 'gemini-3.5-flash-lite',
+                temp: 0.35,
+                extraSystem: '\n5. CHẾ ĐỘ SUY NGHĨ SÂU: Đào sâu phân tích bản chất bài toán, kiểm tra nhiều hướng giải khả dĩ, chỉ ra các bẫy thường gặp và rà soát kỹ tính toán trước khi kết luận.'
+            }
+        ];
+        let currentModeIdx = 0; // Mặc định: Nhanh (trl nhanh)
+
+        function initAnswerMode() {
+            const saved = localStorage.getItem('phuc_bt_mode');
+            if (saved) {
+                const found = ANSWER_MODES.findIndex(m => m.id === saved);
+                if (found !== -1) currentModeIdx = found;
+            }
+            updateModeUI();
+        }
+
+        function cycleAnswerMode() {
+            currentModeIdx = (currentModeIdx + 1) % ANSWER_MODES.length;
+            const m = ANSWER_MODES[currentModeIdx];
+            localStorage.setItem('phuc_bt_mode', m.id);
+            updateModeUI();
+            showToast(`Đã chuyển sang chế độ: ${m.label}`);
+        }
+
+        function updateModeUI() {
+            const m = ANSWER_MODES[currentModeIdx];
+            const lbl = document.getElementById('modeLabel');
+            if (lbl) lbl.textContent = m.label;
+            const btn = document.getElementById('btnModeToggle');
+            if (btn) btn.title = `Chế độ: ${m.label} (Bấm để chuyển giữa Nhanh / Bình thường / Suy nghĩ)`;
+        }
 
         // PWA prompt
         let deferredPrompt = null;
@@ -2036,16 +2115,13 @@ QUY TẮC BẮT BUỘC:
         // ================= DYNAMIC HEADER AUTH BUTTON =================
         function updateHeaderAuthUI() {
             const btn = document.getElementById('headerAuthBtn');
-            const icon = document.getElementById('headerAuthIcon');
             const txt = document.getElementById('headerAuthText');
-            if (!btn || !icon || !txt) return;
+            if (!btn || !txt) return;
 
             if (currentUser) {
-                icon.textContent = '🚪';
                 txt.textContent = 'Đăng xuất';
                 btn.title = `Đang đăng nhập: ${currentUser} (Bấm để đăng xuất)`;
             } else {
-                icon.textContent = '👤';
                 txt.textContent = 'Đăng nhập';
                 btn.title = 'Bấm để đăng nhập hoặc đăng ký';
             }
@@ -2078,15 +2154,12 @@ QUY TẮC BẮT BUỘC:
 
             const tagEl = document.getElementById('userTag');
             const actionBtn = document.getElementById('userActionBtn');
-            const myCodeBtn = document.getElementById('userMyCodeBtn');
             if (currentUser) {
                 if (tagEl) tagEl.textContent = currentUser;
                 if (actionBtn) actionBtn.textContent = 'Đổi TK';
-                if (myCodeBtn) myCodeBtn.style.display = 'inline-block';
             } else {
                 if (tagEl) tagEl.textContent = 'Chưa đăng nhập';
                 if (actionBtn) actionBtn.textContent = 'Đăng nhập';
-                if (myCodeBtn) myCodeBtn.style.display = 'none';
             }
 
             if (sessions.length === 0) {
@@ -2149,46 +2222,32 @@ QUY TẮC BẮT BUỘC:
 
         function updateAuthModalUI() {
             const isReg = authMode === 'register';
-            const isCode = authMode === 'code';
 
-            // Update tab buttons active state
             const tabLogin = document.getElementById('tabLogin');
             const tabReg = document.getElementById('tabRegister');
-            const tabCode = document.getElementById('tabCode');
             if (tabLogin) tabLogin.className = 'auth-tab-btn' + (authMode === 'login' ? ' active' : '');
             if (tabReg) tabReg.className = 'auth-tab-btn' + (isReg ? ' active' : '');
-            if (tabCode) tabCode.className = 'auth-tab-btn' + (isCode ? ' active' : '');
 
-            // Container visibility
             const stdFields = document.getElementById('standardAuthFields');
-            const codeFields = document.getElementById('codeAuthFields');
             const confirmGroup = document.getElementById('confirmPassGroup');
             const titleEl = document.getElementById('authMainTitle');
             const submitBtn = document.getElementById('btnAuthSubmit');
             const hintText = document.getElementById('authHintText');
             const toggleLink = document.getElementById('authToggleLink');
 
-            if (isCode) {
-                if (stdFields) stdFields.style.display = 'none';
-                if (codeFields) codeFields.style.display = 'block';
-                if (titleEl) titleEl.textContent = 'Đăng nhập bằng Mã';
-                if (submitBtn) submitBtn.textContent = '🔑 Đăng nhập ngay';
-                if (toggleLink) toggleLink.innerHTML = `Đăng nhập bình thường? <span onclick="switchAuthMode('login')">Dùng Tên & Mật khẩu</span>`;
-            } else if (isReg) {
-                if (stdFields) stdFields.style.display = 'block';
-                if (codeFields) codeFields.style.display = 'none';
+            if (stdFields) stdFields.style.display = 'block';
+
+            if (isReg) {
                 if (confirmGroup) confirmGroup.style.display = 'block';
                 if (titleEl) titleEl.textContent = 'Đăng ký tài khoản';
                 if (submitBtn) submitBtn.textContent = 'Đăng ký tài khoản';
-                if (hintText) hintText.textContent = '💡 Mỗi tên tài khoản là duy nhất trên toàn hệ thống và lưu trữ bài tập suốt đời.';
+                if (hintText) hintText.textContent = 'Mỗi tên tài khoản là duy nhất và lưu trữ bài tập suốt đời trên đám mây.';
                 if (toggleLink) toggleLink.innerHTML = `Đã có tài khoản? <span onclick="switchAuthMode('login')">Đăng nhập ngay</span>`;
             } else {
-                if (stdFields) stdFields.style.display = 'block';
-                if (codeFields) codeFields.style.display = 'none';
                 if (confirmGroup) confirmGroup.style.display = 'none';
                 if (titleEl) titleEl.textContent = 'Đăng nhập tài khoản';
                 if (submitBtn) submitBtn.textContent = 'Đăng nhập';
-                if (hintText) hintText.textContent = '💡 Đăng nhập thường sẽ tự động đồng bộ và tải toàn bộ bài tập của bạn từ đám mây về thiết bị này.';
+                if (hintText) hintText.textContent = 'Tự động đồng bộ và tải toàn bộ lịch sử bài tập của bạn từ đám mây.';
                 if (toggleLink) toggleLink.innerHTML = `Chưa có tài khoản? <span onclick="switchAuthMode('register')">Đăng ký ngay</span>`;
             }
         }
@@ -2307,48 +2366,7 @@ QUY TẮC BẮT BUỘC:
 
         // ================= AUTH SUBMISSION =================
         async function handleAuthSubmit() {
-            // Method 3: Quick Code Login
-            if (authMode === 'code') {
-                const input = document.getElementById('authCodeInput');
-                const val = input ? input.value.trim() : '';
-                if (!val) {
-                    showToast('Vui lòng dán mã tài khoản vào ô');
-                    return;
-                }
-                try {
-                    let jsonStr;
-                    try {
-                        jsonStr = decodeURIComponent(escape(atob(val)));
-                    } catch (e) {
-                        jsonStr = val;
-                    }
-                    const data = JSON.parse(jsonStr);
-                    if (!data || !Array.isArray(data.sessions)) {
-                        throw new Error('Mã không hợp lệ');
-                    }
-                    if (data.user) {
-                        let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
-                        if (data.pass) {
-                            users[data.user] = data.pass;
-                            localStorage.setItem('phuc_registered_users', JSON.stringify(users));
-                        }
-                        currentUser = data.user;
-                        localStorage.setItem('phuc_current_user', currentUser);
-                    }
-                    sessions = data.sessions;
-                    currentSessionId = data.curId || (sessions[0] ? sessions[0].id : null);
-                    saveUserData();
-                    loadUserData();
-                    closeAuthModal();
-                    if (input) input.value = '';
-                    showToast(`🎉 Đăng nhập thành công! Xin chào ${currentUser || 'bạn'}`);
-                    let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
-                    syncUserToCloud(currentUser, users[currentUser] || '', sessions);
-                } catch (e) {
-                    showToast('⚠️ Mã tài khoản không hợp lệ hoặc bị lỗi!');
-                }
-                return;
-            }
+
 
             // Method 1 & 2: Username & Password
             const u = document.getElementById('authUsername').value.trim();
@@ -2473,53 +2491,25 @@ QUY TẮC BẮT BUỘC:
             }
         }
 
-        // ================= MY CODE MODAL =================
-        function openMyCodeModal() {
-            closeMobileSidebar();
-            if (!currentUser || currentUser === 'guest') {
-                openAuthModal('login');
-                return;
-            }
-            const modal = document.getElementById('myCodeModal');
-            const nameEl = document.getElementById('myCodeUsername');
-            const output = document.getElementById('myCodeOutput');
-            if (nameEl) nameEl.textContent = currentUser;
-
-            let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
-            let userPass = users[currentUser] || '';
-
-            const payload = {
-                v: 1,
-                user: currentUser,
-                pass: userPass,
-                sessions: sessions,
-                curId: currentSessionId,
-                time: Date.now()
-            };
-
+        // ================= BACKUP ALL ACCOUNTS =================
+        async function backupAllAccountsToCloud() {
             try {
-                output.value = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+                let users = JSON.parse(localStorage.getItem('phuc_registered_users') || '{}');
+                for (const u of Object.keys(users)) {
+                    const pwd = users[u];
+                    const rawSess = localStorage.getItem(`phuc_sessions_${u}`);
+                    if (rawSess) {
+                        try {
+                            const uSess = JSON.parse(rawSess);
+                            if (Array.isArray(uSess) && uSess.length > 0) {
+                                syncUserToCloud(u, pwd, uSess);
+                            }
+                        } catch (e) {}
+                    }
+                }
             } catch (e) {
-                output.value = JSON.stringify(payload);
+                console.warn('Backup error:', e);
             }
-
-            modal.classList.add('active');
-        }
-
-        function closeMyCodeModal() {
-            document.getElementById('myCodeModal').classList.remove('active');
-        }
-
-        function copyMyCode() {
-            const output = document.getElementById('myCodeOutput');
-            if (!output || !output.value) return;
-            navigator.clipboard.writeText(output.value).then(() => {
-                showToast('📋 Đã sao chép mã tài khoản vào bộ nhớ tạm!');
-            }).catch(() => {
-                output.select();
-                document.execCommand('copy');
-                showToast('📋 Đã sao chép mã tài khoản!');
-            });
         }
 
         function handleLogout() {
@@ -2676,7 +2666,6 @@ QUY TẮC BẮT BUỘC:
                             <div>${escapeHTML(text)}</div>
                             ${imagesHTML}
                         </div>
-                        <button class="msg-dots-btn" onclick="copyText('${escapeQuotes(text)}')" title="Sao chép">⋮</button>
                     </div>
                 `;
             } else {
@@ -2687,37 +2676,6 @@ QUY TẮC BẮT BUỘC:
                     <div class="msg-sender-label">PHÚC BT</div>
                     <div class="msg-bubble-ai" id="${msgIdSafe}">
                         ${parsedContent}
-                        
-                        <!-- Action Bar Matching Image 1 -->
-                        <div class="ai-action-bar">
-                            <button class="action-icon-btn" onclick="toggleLike(this)" title="Thích">👍</button>
-                            <button class="action-icon-btn" onclick="toggleDislike(this)" title="Không thích">👎</button>
-                            <button class="action-icon-btn" onclick="regenerateLastResponse()" title="Tạo lại câu trả lời">🔄</button>
-                            <button class="action-icon-btn" onclick="copyAIMessage('${msgIdSafe}')" title="Sao chép">📋</button>
-                            <button class="action-icon-btn" onclick="toggleMoreMenu('${idx}')" title="Thêm">⋯</button>
-                            
-                            <!-- Dropdown menu matching Image 1 -->
-                            <div class="more-dropdown" id="dropdown_${idx}">
-                                <div class="more-dropdown-item" onclick="branchNewChat('${idx}')">
-                                    <span class="item-icon">↗</span> Rẽ nhánh sang cuộc trò chuyện mới
-                                </div>
-                                <div class="more-dropdown-item" onclick="speakMessage('${msgIdSafe}')">
-                                    <span class="item-icon">🔊</span> Nghe
-                                </div>
-                                <div class="more-dropdown-item" onclick="exportSingleDoc('${msgIdSafe}')">
-                                    <span class="item-icon">📄</span> Xuất sang Tài liệu
-                                </div>
-                                <div class="more-dropdown-item" onclick="draftInGmail('${msgIdSafe}')">
-                                    <span class="item-icon">📧</span> Tạo thư nháp trong Gmail
-                                </div>
-                                <div class="more-dropdown-item" onclick="reportIssue()">
-                                    <span class="item-icon">⚑</span> Báo cáo vấn đề
-                                </div>
-                                <div class="more-dropdown-item" onclick="viewAnswerDetails()">
-                                    <span class="item-icon">🔀</span> Xem chi tiết về câu trả lời
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 `;
             }
@@ -2989,7 +2947,50 @@ QUY TẮC BẮT BUỘC:
             });
         }
 
-        // ================= SENDING MESSAGES WITH UP TO 10 FILES =================
+        // ================= SENDING & STOPPING MESSAGES =================
+        let currentAbortController = null;
+        let currentTypingIndicatorId = null;
+
+        function handleSendOrStop() {
+            if (isGenerating) {
+                cancelGeneration();
+            } else {
+                handleSend();
+            }
+        }
+
+        function cancelGeneration() {
+            if (currentAbortController) {
+                currentAbortController.abort();
+                currentAbortController = null;
+            }
+            if (currentTypingIndicatorId) {
+                removeTypingIndicator(currentTypingIndicatorId);
+                currentTypingIndicatorId = null;
+            }
+            isGenerating = false;
+            updateSendButtonUI(false);
+            showToast('Đã huỷ câu trả lời');
+            const input = document.getElementById('chatInput');
+            if (input) input.focus();
+        }
+
+        function updateSendButtonUI(generating) {
+            const btn = document.getElementById('btnSend');
+            if (!btn) return;
+            if (generating) {
+                btn.classList.add('stop-mode');
+                btn.innerHTML = '<span class="stop-square-icon" title="Dừng"></span>';
+                btn.title = 'Bấm để huỷ câu trả lời';
+                btn.disabled = false;
+            } else {
+                btn.classList.remove('stop-mode');
+                btn.textContent = 'Gửi';
+                btn.title = 'Gửi tin nhắn';
+                btn.disabled = false;
+            }
+        }
+
         async function handleSend() {
             const input = document.getElementById('chatInput');
             const userText = input.value.trim();
@@ -3011,7 +3012,9 @@ QUY TẮC BẮT BUỘC:
                 images: sentFiles
             };
             session.messages.push(userMsg);
+            session.updatedAt = Date.now();
             appendMessageToDOM('user', userText, sentFiles, session.messages.length - 1);
+            saveUserData();
 
             // Reset input
             input.value = '';
@@ -3019,8 +3022,8 @@ QUY TẮC BẮT BUỘC:
             clearAllSelectedFiles();
 
             isGenerating = true;
-            document.getElementById('btnSend').disabled = true;
-            const typingId = showTypingIndicator();
+            updateSendButtonUI(true);
+            currentTypingIndicatorId = showTypingIndicator();
 
             try {
                 const apiContents = [];
@@ -3054,8 +3057,13 @@ QUY TẮC BẮT BUỘC:
                     }
                 });
 
-                let aiResponseText = await callGeminiAPI(PRIMARY_MODEL, apiContents);
-                removeTypingIndicator(typingId);
+                const mode = ANSWER_MODES[currentModeIdx] || ANSWER_MODES[0];
+                let aiResponseText = await callGeminiAPI(mode.model, apiContents);
+                
+                if (currentTypingIndicatorId) {
+                    removeTypingIndicator(currentTypingIndicatorId);
+                    currentTypingIndicatorId = null;
+                }
 
                 session.messages.push({
                     role: 'model',
@@ -3067,13 +3075,21 @@ QUY TẮC BẮT BUỘC:
                 appendMessageToDOM('model', aiResponseText, null, session.messages.length - 1);
 
             } catch (err) {
-                removeTypingIndicator(typingId);
-                console.error('API Error:', err);
-                const errMsg = `Xin lỗi bạn, PHÚC BT gặp lỗi khi xử lý: ${err.message || 'Lỗi mạng hoặc API'}. Bạn vui lòng thử lại nhé!`;
-                appendMessageToDOM('model', errMsg, null, session.messages.length);
+                if (currentTypingIndicatorId) {
+                    removeTypingIndicator(currentTypingIndicatorId);
+                    currentTypingIndicatorId = null;
+                }
+                if (err.name === 'AbortError') {
+                    console.log('User cancelled generation');
+                } else {
+                    console.error('API Error:', err);
+                    const errMsg = `Xin lỗi bạn, PHÚC BT gặp lỗi khi xử lý: ${err.message || 'Lỗi mạng hoặc API'}. Bạn vui lòng thử lại nhé!`;
+                    appendMessageToDOM('model', errMsg, null, session.messages.length);
+                }
             } finally {
                 isGenerating = false;
-                document.getElementById('btnSend').disabled = false;
+                currentAbortController = null;
+                updateSendButtonUI(false);
                 input.focus();
             }
         }
@@ -3093,8 +3109,8 @@ QUY TẮC BẮT BUỘC:
             renderCurrentMessages();
 
             isGenerating = true;
-            document.getElementById('btnSend').disabled = true;
-            const typingId = showTypingIndicator();
+            updateSendButtonUI(true);
+            currentTypingIndicatorId = showTypingIndicator();
 
             try {
                 const apiContents = [];
@@ -3113,8 +3129,12 @@ QUY TẮC BẮT BUỘC:
                     }
                 });
 
-                let aiResponseText = await callGeminiAPI(PRIMARY_MODEL, apiContents);
-                removeTypingIndicator(typingId);
+                const mode = ANSWER_MODES[currentModeIdx] || ANSWER_MODES[0];
+                let aiResponseText = await callGeminiAPI(mode.model, apiContents);
+                if (currentTypingIndicatorId) {
+                    removeTypingIndicator(currentTypingIndicatorId);
+                    currentTypingIndicatorId = null;
+                }
 
                 session.messages.push({ role: 'model', text: aiResponseText });
                 session.updatedAt = Date.now();
@@ -3122,27 +3142,38 @@ QUY TẮC BẮT BUỘC:
 
                 appendMessageToDOM('model', aiResponseText, null, session.messages.length - 1);
             } catch (err) {
-                removeTypingIndicator(typingId);
-                showToast('Lỗi khi tạo lại: ' + err.message);
+                if (currentTypingIndicatorId) {
+                    removeTypingIndicator(currentTypingIndicatorId);
+                    currentTypingIndicatorId = null;
+                }
+                if (err.name !== 'AbortError') {
+                    showToast('Lỗi khi tạo lại: ' + err.message);
+                }
             } finally {
                 isGenerating = false;
-                document.getElementById('btnSend').disabled = false;
+                currentAbortController = null;
+                updateSendButtonUI(false);
             }
         }
 
         async function callGeminiAPI(modelName, contents) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 28000);
+            const mode = ANSWER_MODES[currentModeIdx] || ANSWER_MODES[0];
+            const actualModel = modelName || mode.model;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${actualModel}:generateContent?key=${API_KEY}`;
+            
+            currentAbortController = new AbortController();
+            const timeoutId = setTimeout(() => {
+                if (currentAbortController) currentAbortController.abort();
+            }, 30000);
 
             try {
                 const payload = {
                     system_instruction: {
-                        parts: [{ text: SYSTEM_INSTRUCTION }]
+                        parts: [{ text: SYSTEM_INSTRUCTION + (mode.extraSystem || '') }]
                     },
                     contents: contents,
                     generationConfig: {
-                        temperature: 0.25,
+                        temperature: mode.temp || 0.25,
                         topP: 0.95,
                         maxOutputTokens: 8192
                     }
@@ -3152,14 +3183,14 @@ QUY TẮC BẮT BUỘC:
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
-                    signal: controller.signal
+                    signal: currentAbortController.signal
                 });
                 clearTimeout(timeoutId);
 
                 if (!response.ok) {
-                    if (modelName !== FALLBACK_MODEL) {
-                        console.warn(`Model ${modelName} lỗi (${response.status}), đang chuyển sang ${FALLBACK_MODEL}...`);
-                        return await callGeminiAPI(FALLBACK_MODEL, contents);
+                    if (actualModel !== mode.fallback) {
+                        console.warn(`Model ${actualModel} lỗi (${response.status}), chuyển sang ${mode.fallback}...`);
+                        return await callGeminiAPI(mode.fallback, contents);
                     }
                     const errData = await response.json().catch(() => ({}));
                     throw new Error(errData?.error?.message || `HTTP ${response.status}`);
@@ -3171,9 +3202,10 @@ QUY TẮC BẮT BUỘC:
                 return text;
             } catch (err) {
                 clearTimeout(timeoutId);
-                if (modelName !== FALLBACK_MODEL) {
-                    console.warn(`Model ${modelName} gặp sự cố (${err.message}), đang thử lại với ${FALLBACK_MODEL}...`);
-                    return await callGeminiAPI(FALLBACK_MODEL, contents);
+                if (err.name === 'AbortError') throw err;
+                if (actualModel !== mode.fallback) {
+                    console.warn(`Model ${actualModel} gặp sự cố (${err.message}), thử lại với ${mode.fallback}...`);
+                    return await callGeminiAPI(mode.fallback, contents);
                 }
                 throw err;
             }
@@ -3290,14 +3322,14 @@ QUY TẮC BẮT BUỘC:
             const isLight = document.body.classList.contains('light-mode');
             localStorage.setItem('phuc_ai_theme', isLight ? 'light' : 'dark');
 
-            document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀';
-            document.getElementById('themeText').textContent = isLight ? 'Giao diện tối' : 'Giao diện sáng';
+            const themeText = document.getElementById('themeText');
+            if (themeText) themeText.textContent = isLight ? 'Giao diện tối' : 'Giao diện sáng';
         }
 
         if (localStorage.getItem('phuc_ai_theme') === 'light') {
             document.body.classList.add('light-mode');
-            document.getElementById('themeIcon').textContent = '🌙';
-            document.getElementById('themeText').textContent = 'Giao diện tối';
+            const themeText = document.getElementById('themeText');
+            if (themeText) themeText.textContent = 'Giao diện tối';
         }
 
         function exportChat() {
@@ -3384,9 +3416,82 @@ QUY TẮC BẮT BUỘC:
 
         // Window stays completely steady (no dizziness)
 
+
+        // ================= REALTIME CROSS-DEVICE SYNC =================
+        let isSyncingCloudBackground = false;
+
+        async function checkCloudUpdates(force = false) {
+            if (!currentUser || currentUser === 'guest' || isGenerating || isSyncingCloudBackground) return;
+            const uKey = currentUser.toLowerCase();
+            let cloudId = localStorage.getItem(`phuc_cloud_id_${uKey}`);
+
+            try {
+                isSyncingCloudBackground = true;
+                // If cloudId not in localStorage on this device, fetch from keyval.org
+                if (!cloudId) {
+                    const kvResp = await fetch(`${CLOUD_KV_URL}/get/phucbt_u_${uKey}`);
+                    if (kvResp.ok) {
+                        const kvData = await kvResp.json();
+                        if (kvData.status === 'SUCCESS' && kvData.val) {
+                            const parts = kvData.val.split(':::');
+                            if (parts.length > 1) {
+                                cloudId = parts[1];
+                                localStorage.setItem(`phuc_cloud_id_${uKey}`, cloudId);
+                            }
+                        }
+                    }
+                }
+
+                if (!cloudId) return;
+
+                const objResp = await fetch(`${CLOUD_OBJ_URL}/${cloudId}?t=${Date.now()}`);
+                if (objResp.ok) {
+                    const objData = await objResp.json();
+                    const cloudSessions = objData?.data?.sessions;
+                    if (Array.isArray(cloudSessions) && cloudSessions.length > 0) {
+                        const localStr = JSON.stringify(sessions);
+                        const cloudStr = JSON.stringify(cloudSessions);
+                        if (localStr !== cloudStr) {
+                            sessions = cloudSessions;
+                            if (!sessions.find(s => s.id === currentSessionId)) {
+                                currentSessionId = sessions[0].id;
+                            }
+                            localStorage.setItem(`phuc_sessions_${currentUser}`, cloudStr);
+                            localStorage.setItem(`phuc_cur_sess_${currentUser}`, currentSessionId);
+                            renderSessionsList();
+                            renderCurrentMessages();
+                            console.log('🔄 Đã tự động đồng bộ tin nhắn mới từ thiết bị khác!');
+                        }
+                    }
+                }
+            } catch (e) {
+                // Silently ignore background network hiccups
+            } finally {
+                isSyncingCloudBackground = false;
+            }
+        }
+
+        // Auto sync when user switches back to PC / app tab
+        window.addEventListener('focus', () => {
+            checkCloudUpdates();
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                checkCloudUpdates();
+            }
+        });
+
+        // Periodic background polling every 10 seconds for cross-device sync
+        setInterval(() => {
+            checkCloudUpdates();
+        }, 10000);
+
         window.addEventListener('DOMContentLoaded', () => {
+            initAnswerMode();
             loadUserData();
             initAmbientCanvas();
+            setTimeout(() => { checkCloudUpdates(true); backupAllAccountsToCloud(); }, 1000);
         });
     </script>
 </body>
