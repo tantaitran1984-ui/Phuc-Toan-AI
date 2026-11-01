@@ -1651,6 +1651,118 @@
             border-radius: 3px;
         }
 
+    
+        /* Math & Geometry Diagram Canvas Container */
+        .math-diagram-box {
+            margin: 16px 0;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1.5px solid #d0d7de;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            max-width: 100%;
+            width: fit-content;
+        }
+
+        .diagram-render-area {
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .diagram-render-area svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .diagram-toolbar {
+            width: 100%;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .diagram-title-tag {
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-download-diagram {
+            background: #1971c2;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .btn-download-diagram:hover {
+            background: #1864ab;
+            transform: translateY(-1px);
+        }
+
+    
+        /* Transparent Copy Button */
+        .msg-transparent-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 6px;
+            padding-top: 2px;
+        }
+
+        .btn-copy-transparent {
+            background: transparent !important;
+            border: 1px solid transparent !important;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 3px 8px;
+            border-radius: 6px;
+            opacity: 0.45;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            user-select: none;
+        }
+
+        .btn-copy-transparent:hover {
+            opacity: 1;
+            color: #74c0fc;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border-color: rgba(116, 192, 252, 0.25) !important;
+        }
+
+        /* Image styling in AI response bubble */
+        .msg-bubble-ai img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 10px 0;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            display: block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -1993,9 +2105,22 @@ QUY TẮC BẮT BUỘC:
 3. RA ĐỀ BÀI THEO YÊU CẦU:
    - Khi người dùng yêu cầu ra đề bài (ví dụ: "cho mình 5 câu trắc nghiệm Hoá", "ra đề toán hình lớp 9", "cho bài tập Tiếng Anh thì hiện tại hoàn thành"...), PHÚC BT lập tức biên soạn đề bài chuẩn xác, phân loại độ khó rõ ràng (Nhận biết, Thông hiểu, Vận dụng), kèm đáp án và lời giải chi tiết khi được yêu cầu.
 
-4. PHẠM VI TRẢ LỜI & GIỚI HẠN BẮT BUỘC:
-   - PHÚC BT CHỈ giải quyết các vấn đề liên quan đến HỌC TẬP, GIẢI BÀI TẬP, KIẾN THỨC MÔN HỌC hoặc RA ĐỀ BÀI LUYỆN TẬP.
-   - Nếu người dùng hỏi những câu hỏi ngoài lề không liên quan đến học tập hoặc bài tập (ví dụ chuyện phiếm cá nhân, "tôi có đẹp trai không", hỏi việc đời tư không dính dáng đến kiến thức môn học...), bạn hãy lịch sự từ chối ngắn gọn: "Xin lỗi bạn, PHÚC BT là trợ lý chuyên giải bài tập và hỗ trợ học tập các môn học. Bạn hãy gửi bài tập hoặc yêu cầu học tập để mình hỗ trợ nhé!"
+4. TÌM KIẾM HÌNH ẢNH TRÊN MẠNG & TẠO HÌNH ẢNH HỌC TẬP:
+   - Khi người dùng hỏi hoặc yêu cầu hình ảnh về BẤT KỲ NHÂN VẬT LỊCH SỬ (như Hưng Đạo Đại Vương Trần Hưng Đạo, Bác Hồ, Đại tướng Võ Nguyên Giáp, Hai Bà Trưng, Ngô Quyền, Lê Lợi, Quang Trung...), địa danh lịch sử, địa lý, kiến thức sinh học, danh nhân thế giới, khoa học...:
+     + BẠN BẮT BUỘC TRẢ LỜI TẬN TÂM VÀ CUNG CẤP HÌNH ẢNH ĐẦY ĐỦ! TUYỆT ĐỐI KHÔNG TỪ CHỐI! Lịch sử, Địa lý, Sinh học, Danh nhân là các môn học trọng tâm.
+     + Với nhân vật lịch sử, địa danh hoặc sự kiện thực, TUYỆT ĐỐI KHÔNG tự tạo ảnh bằng AI, không dùng Pollinations và không thay thế bằng ảnh minh họa tưởng tượng.
+     + Chỉ hiển thị ảnh đã xác thực có nguồn từ Wikipedia hoặc Wikimedia Commons bằng đúng liên kết do hệ thống cung cấp theo cú pháp Markdown.
+     + Không được tự suy đoán URL ảnh. Nếu không có ảnh xác thực, hãy nói rõ và không chèn ảnh giả/mô phỏng.
+     + Kèm theo phần tóm tắt tiểu sử, chiến công hiển hách (ví dụ chiến thắng Bạch Đằng, Hịch tướng sĩ...), ý nghĩa lịch sử hoặc bài học kiến thức thật hay và chuẩn xác.
+   - Khi người dùng yêu cầu vẽ hình học (tam giác, hình tròn, hình vuông, hình thang, đồ thị...):
+     + BẮT BUỘC VẼ BẰNG SVG trong thẻ <svg>...</svg>.
+     + Nền luôn là MÀU TRẮNG: <rect width="100%" height="100%" fill="#ffffff" rx="10"/>
+     + Màu viền (stroke): TUÂN THỦ ĐÚNG MÀU NGƯỜI DÙNG YÊU CẦU (viền đỏ stroke="red", viền xanh stroke="#1971c2", mặc định viền đen stroke="#111827").
+     + Đầy đủ các đỉnh (A, B, C...), đường cao nét đứt, góc vuông, ký hiệu góc, cạnh bằng nhau.
+
+5. PHẠM VI TRẢ LỜI & GIỚI HẠN:
+   - PHÚC BT hỗ trợ toàn diện tất cả các môn học (Toán, Lý, Hóa, Sinh, Sử, Địa, Văn, Ngoại ngữ, Tin học, GDCD...) bao gồm giải bài tập, cung cấp hình ảnh minh họa lịch sử, danh nhân, địa lý và ra đề bài theo yêu cầu.
+   - Chỉ từ chối những câu hỏi trêu đùa hoàn toàn không liên quan (như "tôi có đẹp trai không"). Tất cả câu hỏi về môn học, nhân vật, kiến thức xã hội, khoa học đều được giải đáp nhiệt tình.
    - Tuyệt đối KHÔNG dùng icon máy tính trong câu trả lời.
    - Luôn thân thiện, chuẩn xác, xưng là "PHÚC BT" hoặc "mình", gọi người dùng là "bạn".`;
 
@@ -2147,6 +2272,9 @@ QUY TẮC BẮT BUỘC:
                     s.messages.forEach(m => {
                         if (m.text) {
                             m.text = m.text.replace(/🧮/g, '').replace(/💻/g, '').replace(/🖥️/g, '');
+                            m.text = m.text.replace(/!\[[^\]]*\]\(https?:\/\/image\.pollinations\.ai\/[^)]+\)/gi, '')
+                                .replace(/https?:\/\/image\.pollinations\.ai\/[^\s)]+/gi, '')
+                                .replace(/\n{3,}/g, '\n\n');
                         }
                     });
                 }
@@ -2170,7 +2298,7 @@ QUY TẮC BẮT BUỘC:
                     messages: [
                         {
                             role: 'model',
-                            text: 'Chào bạn! Mình là **PHÚC BT** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
+                            text: 'Chào bạn! Mình là **PHÚC BT** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức, **vẽ hình học / tạo hình ảnh minh họa**, hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
                         }
                     ],
                     updatedAt: Date.now()
@@ -2549,7 +2677,7 @@ QUY TẮC BẮT BUỘC:
                 messages: [
                     {
                         role: 'model',
-                        text: 'Chào bạn! Mình là **PHÚC BT** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
+                        text: 'Chào bạn! Mình là **PHÚC BT** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức, **vẽ hình học / tạo hình ảnh minh họa**, hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
                     }
                 ],
                 updatedAt: Date.now()
@@ -2662,9 +2790,12 @@ QUY TẮC BẮT BUỘC:
                 row.innerHTML = `
                     <div class="msg-sender-label">BẠN</div>
                     <div class="user-bubble-wrapper">
-                        <div class="msg-bubble-user">
+                        <div class="msg-bubble-user" id="user_msg_${idx}">
                             <div>${escapeHTML(text)}</div>
                             ${imagesHTML}
+                            <div class="msg-transparent-actions">
+                                <button type="button" class="btn-copy-transparent" onclick="copyCleanBubbleText('user_msg_${idx}')" title="Sao chép nội dung">Sao chép</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2675,7 +2806,10 @@ QUY TẮC BẮT BUỘC:
                 row.innerHTML = `
                     <div class="msg-sender-label">PHÚC BT</div>
                     <div class="msg-bubble-ai" id="${msgIdSafe}">
-                        ${parsedContent}
+                        <div class="ai-msg-content">${parsedContent}</div>
+                        <div class="msg-transparent-actions">
+                            <button type="button" class="btn-copy-transparent" onclick="copyCleanBubbleText('${msgIdSafe}')" title="Sao chép câu trả lời">Sao chép</button>
+                        </div>
                     </div>
                 `;
             }
@@ -2900,21 +3034,30 @@ QUY TẮC BẮT BUỘC:
             chatBody.scrollTop = chatBody.scrollHeight;
         }
 
-        // ================= MARKDOWN & LATEX =================
+        // ================= MARKDOWN, LATEX & SVG DIAGRAM RENDERER =================
         function formatMarkdownAndMath(text) {
             if (!text) return '';
 
+            const svgPlaceholders = [];
             const mathPlaceholders = [];
             let sanitized = text;
 
-            // Display math $$...$$
+            // 1. Extract SVG geometry & image creation blocks (```svg ... ``` or direct <svg>...</svg>)
+            sanitized = sanitized.replace(/```(?:svg|xml|html)?\s*(<svg[\s\S]*?<\/svg>)\s*```|(<svg[\s\S]*?<\/svg>)/gi, (match, p1, p2) => {
+                const svgContent = (p1 || p2 || match).trim();
+                const idx = svgPlaceholders.length;
+                svgPlaceholders.push(svgContent);
+                return `%%SVG_DIAGRAM_BLOCK_${idx}%%`;
+            });
+
+            // 2. Display math $$...$$
             sanitized = sanitized.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
                 const idx = mathPlaceholders.length;
                 mathPlaceholders.push(match);
                 return `%%MATH_BLOCK_${idx}%%`;
             });
 
-            // Inline math $...$
+            // 3. Inline math $...$
             sanitized = sanitized.replace(/\$([^\$\n]+?)\$/g, (match) => {
                 const idx = mathPlaceholders.length;
                 mathPlaceholders.push(match);
@@ -2924,11 +3067,72 @@ QUY TẮC BẮT BUỘC:
             marked.setOptions({ breaks: true, gfm: true });
             let html = marked.parse(sanitized);
 
+            // 4. Restore math formulas
             mathPlaceholders.forEach((math, idx) => {
                 html = html.replace(`%%MATH_BLOCK_${idx}%%`, math);
             });
 
+            // 5. Restore and wrap SVG Diagrams in interactive Whiteboard Box with Download button
+            svgPlaceholders.forEach((svgCode, idx) => {
+                const boxId = `diag_box_${Date.now()}_${idx}`;
+                const diagramHtml = `
+                    <div class="math-diagram-box" id="${boxId}">
+                        <div class="diagram-render-area">
+                            ${svgCode}
+                        </div>
+                        <div class="diagram-toolbar">
+                            <span class="diagram-title-tag">Hình vẽ minh họa</span>
+                            <button type="button" class="btn-download-diagram" onclick="downloadDiagramAsPNG('${boxId}')" title="Tải ảnh PNG về máy">
+                                Tải ảnh về máy
+                            </button>
+                        </div>
+                    </div>
+                `;
+                html = html.replace(`%%SVG_DIAGRAM_BLOCK_${idx}%%`, diagramHtml);
+            });
+
             return html;
+        }
+
+        // Download rendered diagram as high-quality PNG image
+        function downloadDiagramAsPNG(boxId) {
+            const box = document.getElementById(boxId);
+            if (!box) return;
+            const svg = box.querySelector('svg');
+            if (!svg) return;
+
+            try {
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const URL = window.URL || window.webkitURL || window;
+                const blobURL = URL.createObjectURL(svgBlob);
+                const image = new Image();
+
+                image.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const scale = 2; // high resolution
+                    const w = svg.clientWidth || 380;
+                    const h = svg.clientHeight || 340;
+                    canvas.width = w * scale;
+                    canvas.height = h * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.scale(scale, scale);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(image, 0, 0, w, h);
+
+                    const a = document.createElement('a');
+                    a.download = `Phuc_BT_HinhVe_${Date.now()}.png`;
+                    a.href = canvas.toDataURL('image/png');
+                    a.click();
+                    URL.revokeObjectURL(blobURL);
+                    showToast('Đã tải ảnh PNG về máy thành công!');
+                };
+                image.src = blobURL;
+            } catch (e) {
+                console.error('Download error:', e);
+                showToast('Không thể xuất ảnh, vui lòng thử lại');
+            }
         }
 
         function escapeHTML(str) {
@@ -2945,6 +3149,84 @@ QUY TẮC BẮT BUỘC:
             navigator.clipboard.writeText(txt).then(() => {
                 showToast('Đã sao chép nội dung');
             });
+        }
+
+        // ================= COPY & IMAGE SEARCH HELPERS =================
+        function copyCleanBubbleText(bubbleId) {
+            const bubble = document.getElementById(bubbleId);
+            if (!bubble) return;
+            const clone = bubble.cloneNode(true);
+            const actions = clone.querySelectorAll('.msg-transparent-actions, .diagram-toolbar');
+            actions.forEach(el => el.remove());
+            const text = clone.innerText.trim();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Đã sao chép nội dung');
+                }).catch(() => {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showToast('Đã sao chép nội dung');
+            } catch (e) {}
+            document.body.removeChild(ta);
+        }
+
+        async function fetchWikiImageInfo(query) {
+            try {
+                const cleanQ = query
+                    .replace(/(cho tui|cho mình|tìm|xem|tạo)?\s*(hình ảnh|hình|ảnh|chân dung|bức ảnh)\s*(của|về)?/gi, '')
+                    .replace(/[?.!]+$/, '')
+                    .trim();
+                if (!cleanQ || cleanQ.length < 2) return null;
+
+                const params = new URLSearchParams({
+                    action: 'query',
+                    generator: 'search',
+                    gsrsearch: cleanQ,
+                    gsrlimit: '6',
+                    prop: 'pageimages',
+                    piprop: 'thumbnail',
+                    pithumbsize: '900',
+                    pilimit: '6',
+                    format: 'json',
+                    origin: '*'
+                });
+                const controller = new AbortController();
+                const tid = setTimeout(() => controller.abort(), 6000);
+                const resp = await fetch(`https://vi.wikipedia.org/w/api.php?${params}`, { signal: controller.signal });
+                clearTimeout(tid);
+                if (!resp.ok) return null;
+
+                const data = await resp.json();
+                const pages = data?.query?.pages;
+                if (!pages) return null;
+
+                const candidates = Object.values(pages).sort((a, b) => {
+                    const aScore = (a.title.toLowerCase().includes(cleanQ.toLowerCase()) || cleanQ.toLowerCase().includes(a.title.toLowerCase())) ? 0 : 1;
+                    const bScore = (b.title.toLowerCase().includes(cleanQ.toLowerCase()) || cleanQ.toLowerCase().includes(b.title.toLowerCase())) ? 0 : 1;
+                    return aScore - bScore;
+                });
+                const match = candidates.find(page => page.thumbnail && page.thumbnail.source);
+                if (match) {
+                    return { title: match.title, imgUrl: match.thumbnail.source };
+                }
+            } catch (e) {
+                // Silently ignore if offline or blocked
+            }
+            return null;
         }
 
         // ================= SENDING & STOPPING MESSAGES =================
@@ -3057,8 +3339,27 @@ QUY TẮC BẮT BUỘC:
                     }
                 });
 
+                // Check if user is asking for an image/person/place online
+                if (/hình ảnh|ảnh của|hình của|chân dung/i.test(userText)) {
+                    try {
+                        const wikiImg = await fetchWikiImageInfo(userText);
+                        if (wikiImg && wikiImg.imgUrl) {
+                            apiContents.push({
+                                role: 'user',
+                                parts: [{ text: `[ĐÂY LÀ ẢNH TƯ LIỆU ĐÃ ĐƯỢC HỆ THỐNG XÁC MINH TRÊN WIKIPEDIA: tiêu đề "${wikiImg.title}", URL nguồn chính thức ${wikiImg.imgUrl}. Bắt buộc hiển thị chính xác duy nhất liên kết này bằng cú pháp Markdown ![${wikiImg.title}](${wikiImg.imgUrl}), không tạo, thay thế, mô tả lại hoặc thay đổi URL bằng ảnh AI nào khác. Kèm tiểu sử và công trạng lịch sử chuẩn xác.]` }]
+                            });
+                        }
+                    } catch (e) {}
+                }
+
                 const mode = ANSWER_MODES[currentModeIdx] || ANSWER_MODES[0];
                 let aiResponseText = await callGeminiAPI(mode.model, apiContents);
+                if (/hình ảnh|ảnh của|hình của|chân dung/i.test(userText)) {
+                    aiResponseText = aiResponseText
+                        .replace(/!\[[^\]]*\]\(https?:\/\/image\.pollinations\.ai\/[^)]+\)/gi, '')
+                        .replace(/https?:\/\/image\.pollinations\.ai\/[^\s)]+/gi, '')
+                        .replace(/\n{3,}/g, '\n\n');
+                }
                 
                 if (currentTypingIndicatorId) {
                     removeTypingIndicator(currentTypingIndicatorId);
