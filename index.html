@@ -3318,11 +3318,11 @@ QUY TẮC BẮT BUỘC:
                         const promptText = msg.text || `Quan sát thật kỹ toàn bộ ${msg.images.length} hình ảnh/tệp đính kèm bên dưới, nhận diện đầy đủ đề bài và giải chi tiết từng bước thật dễ hiểu, đưa ra đáp số chuẩn xác.`;
                         parts.push({ text: promptText });
                         
-                        // Add each file as inlineData
+                        // Gemini REST API dùng snake_case cho dữ liệu hình ảnh inline.
                         msg.images.forEach(img => {
                             parts.push({
-                                inlineData: {
-                                    mimeType: img.mimeType,
+                                inline_data: {
+                                    mime_type: img.mimeType,
                                     data: img.base64
                                 }
                             });
@@ -3420,7 +3420,7 @@ QUY TẮC BẮT BUỘC:
                     if (msg.images && msg.images.length > 0) {
                         parts.push({ text: msg.text || 'Nhận diện và giải bài toán trong ảnh' });
                         msg.images.forEach(img => {
-                            parts.push({ inlineData: { mimeType: img.mimeType, data: img.base64 } });
+                            parts.push({ inline_data: { mime_type: img.mimeType, data: img.base64 } });
                         });
                     } else if (msg.text) {
                         parts.push({ text: msg.text });
@@ -3498,8 +3498,14 @@ QUY TẮC BẮT BUỘC:
                 }
 
                 const data = await response.json();
-                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!text) throw new Error('Không nhận được phản hồi từ AI');
+                const parts = data?.candidates?.[0]?.content?.parts;
+                const text = Array.isArray(parts)
+                    ? parts.map(part => part?.text || '').join('').trim()
+                    : '';
+                if (!text) {
+                    const blockReason = data?.promptFeedback?.blockReason || data?.candidates?.[0]?.finishReason;
+                    throw new Error(blockReason ? `AI không thể trả lời (lý do: ${blockReason})` : 'Không nhận được phản hồi từ AI');
+                }
                 return text;
             } catch (err) {
                 clearTimeout(timeoutId);
