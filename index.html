@@ -1987,7 +1987,7 @@
 
             <!-- Bottom Input Dock with Multi-file upload (up to 10 files) & Camera -->
             <footer class="chat-input-container">
-                <!-- Plus Action Menu Popup: 2 compact icon buttons (Album/Picture & Camera) -->
+                <!-- Plus Action Menu Popup: Album, Camera & Desktop Screenshot -->
                 <div class="plus-action-menu" id="plusActionMenu">
                     <button type="button" class="plus-mini-icon-btn" onclick="triggerPickFiles()" title="Mở Album chọn ảnh, video hoặc tệp bài tập (Tối đa 10 tệp)">
                         <span class="icon">🖼️</span>
@@ -1996,6 +1996,10 @@
                     <button type="button" class="plus-mini-icon-btn" onclick="triggerCameraCapture()" title="Mở máy ảnh chụp bài tập trực tiếp">
                         <span class="icon">📸</span>
                         <span class="tooltip">Chụp ảnh</span>
+                    </button>
+                    <button type="button" class="plus-mini-icon-btn" onclick="captureDesktopScreen()" title="Chọn cửa sổ hoặc màn hình máy tính để chụp">
+                        <span class="icon">🖥️</span>
+                        <span class="tooltip">Chụp màn hình PC</span>
                     </button>
                 </div>
 
@@ -2017,9 +2021,8 @@
                                   oninput="autoResizeTextarea(this)"></textarea>
                     </div>
 
-                    <!-- 3 Chế độ xếp từ nhanh đến chậm: Nhanh -> Bình thường -> Suy nghĩ -->
-                    <button type="button" class="mode-capsule-btn" id="btnModeToggle" onclick="cycleAnswerMode()" title="Chế độ trả lời: Nhanh (Trl nhanh) / Bình thường / Suy nghĩ">
-                        <span id="modeLabel">Nhanh</span>
+                    <button type="button" class="mode-capsule-btn" id="btnModeToggle" onclick="cycleAnswerMode()" title="Chế độ AI: Cực thông minh">
+                        <span id="modeLabel">Cực thông minh</span>
                     </button>
                     <!-- Nút Gửi / Nút hình vuông huỷ khi AI đang trả lời -->
                     <button type="button" class="btn-send" id="btnSend" onclick="handleSendOrStop()" title="Gửi tin nhắn">
@@ -2190,51 +2193,33 @@
 
     <script>
         // Obfuscated key to prevent GitHub Push Protection scanner from blocking upload
-        const API_KEY = 'AQ.Ab8RN6IRmxlM-bmAgsFM8j5zWmcjTBZUsVnUOMLzBW2NeZbryw';
-        const PRIMARY_MODEL = 'gemini-2.5-pro';
-        const FALLBACK_MODEL = 'gemini-2.5-flash';
+        const PRIMARY_MODEL = 'gemini-3.1-pro-preview';
+        const FALLBACK_MODEL = 'gemini-3.1-flash-lite';
 
-        // 3 Chế độ trả lời xếp theo thứ tự từ nhanh đến chậm: Nhanh -> Bình thường -> Suy nghĩ
+        // Phiên bản cố định với sức mạnh AI cao nhất; không còn nhiều chế độ trùng nhau.
         const ANSWER_MODES = [
-            {
-                id: 'fast',
-                label: 'Nhanh',
-                model: 'gemini-2.5-pro',
-                fallback: 'gemini-2.5-pro',
-                temp: 0.05,
-                extraSystem: '\n5. CHẾ ĐỘ NHANH: Ưu tiên tốc độ nhưng không đánh đổi độ chính xác. Trình bày ngắn gọn, kiểm tra phép tính, điều kiện và đáp án trước khi kết luận.'
-            },
             {
                 id: 'normal',
                 label: 'Cực thông minh',
-                model: 'gemini-2.5-pro',
-                fallback: 'gemini-2.5-pro',
+                model: 'gemini-3.1-pro-preview',
+                fallback: 'gemini-3.1-flash-lite',
                 temp: 0.08,
-                extraSystem: '\n5. CHẾ ĐỘ BÌNH THƯỜNG: Cân bằng tốc độ và độ chính xác. Giải đầy đủ từng bước, đối chiếu điều kiện đề bài và tự rà phép tính trước khi kết luận.'
-            },
-            {
-                id: 'deep',
-                label: 'Cực thông minh',
-                model: 'gemini-2.5-pro',
-                fallback: 'gemini-2.5-pro',
-                temp: 0.03,
                 extraSystem: '\n5. CHẾ ĐỘ SUY NGHĨ SÂU: Phân tích kỹ đề bài, cân nhắc nhiều cách giải, tự kiểm tra độc lập bằng cách thay ngược kết quả, đối chiếu điều kiện, đơn vị và đáp số; chỉ kết luận sau khi loại sai sót logic và tính toán.'
             }
         ];
-        let currentModeIdx = 2;
+        let currentModeIdx = 0;
 
         function initAnswerMode() {
-            currentModeIdx = 2;
-            localStorage.setItem('phuc_bt_mode', ANSWER_MODES[2].id);
+            currentModeIdx = 0;
+            localStorage.setItem('phuc_bt_mode', ANSWER_MODES[0].id);
             updateModeUI();
         }
 
         function cycleAnswerMode() {
-            currentModeIdx = (currentModeIdx + 1) % ANSWER_MODES.length;
             const m = ANSWER_MODES[currentModeIdx];
             localStorage.setItem('phuc_bt_mode', m.id);
             updateModeUI();
-            showToast(`Đã chuyển sang chế độ: ${m.label}`);
+            showToast(`Đang dùng chế độ ${m.label}`);
         }
 
         function updateModeUI() {
@@ -2402,6 +2387,8 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
 - Với bài chọn đáp án, loại từng phương án sai bằng lý do cụ thể.
 - Chỉ đưa thông tin chắc chắn; nếu không đủ cơ sở hãy thừa nhận giới hạn.
 - Không được nói "tôi kiểm tra rồi" khi chưa thực sự tự rà lại đầy đủ.
+- Phép tính cơ bản phải tuyệt đối chính xác. Ví dụ: 1 + 1 = 2. Không thêm chữ số, không hiểu nhầm thành 11 + 1.
+- Với mọi phép cộng, trừ, nhân, chia được viết trong câu hỏi, hãy tính lại độc lập ít nhất hai lần trước khi đưa đáp án.
 - Sau khi kết luận, rà một lượt cuối để tìm mâu thuẫn, đơn vị sai, dấu sai hoặc điều kiện bị bỏ sót.`;
 
         const ENHANCED_SYSTEM_INSTRUCTION = SYSTEM_INSTRUCTION + ACCURACY_INSTRUCTION;
@@ -2506,6 +2493,46 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
             closePlusActionMenu();
             const camInput = document.getElementById('cameraInput');
             if (camInput) camInput.click();
+        }
+
+        async function captureDesktopScreen() {
+            closePlusActionMenu();
+            if (!navigator.mediaDevices?.getDisplayMedia) {
+                showToast('Trình duyệt này không hỗ trợ chụp màn hình. Hãy dùng Chrome hoặc Edge.');
+                return;
+            }
+
+            let stream = null;
+            try {
+                stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { frameRate: { ideal: 30 } },
+                    audio: false
+                });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.muted = true;
+                await video.play();
+                await new Promise(resolve => setTimeout(resolve, 150));
+
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                if (!canvas.width || !canvas.height) throw new Error('Không thể đọc kích thước màn hình');
+
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                if (!blob) throw new Error('Không thể tạo ảnh màn hình');
+
+                const screenFile = new File([blob], `man-hinh-${Date.now()}.png`, { type: 'image/png' });
+                addFilesToSelected([screenFile]);
+                showToast('Đã chụp màn hình và thêm vào ảnh bài tập');
+            } catch (error) {
+                if (error?.name !== 'NotAllowedError') {
+                    showToast(error?.message || 'Không thể chụp màn hình');
+                }
+            } finally {
+                stream?.getTracks().forEach(track => track.stop());
+            }
         }
 
         // Close plus action menu when clicking outside
@@ -3742,7 +3769,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
         async function callGeminiAPI(modelName, contents) {
             const mode = ANSWER_MODES[currentModeIdx] || ANSWER_MODES[0];
             const actualModel = modelName || mode.model;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${actualModel}:generateContent?key=${API_KEY}`;
+            const url = '/api/generate';
             
             currentAbortController = new AbortController();
             const timeoutId = setTimeout(() => {
@@ -3765,7 +3792,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
                 let response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify({ model: actualModel, payload }),
                     signal: currentAbortController.signal
                 });
                 clearTimeout(timeoutId);
