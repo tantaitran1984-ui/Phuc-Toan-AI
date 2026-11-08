@@ -1,7 +1,7 @@
 {
     "id": "phuc-bt-app",
-    "name": "PHÚC BT - Trợ Lý Học Tập & Giải Bài Tập",
-    "short_name": "PHÚC BT",
+    "name": "PHUC BT V8 - Tro Ly Hoc Tap & Giai Bai Tap",
+    "short_name": "PHUC BT V8",
     "description": "Ứng dụng PHÚC BT hỗ trợ học tập, giải bài tập và ra đề luyện tập mọi môn học thông minh",
     "start_url": "./index.html",
     "scope": "./",

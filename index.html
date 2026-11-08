@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PHÚC BT V7 - Trợ Lý Học Tập & Giải Bài Tập Đa Môn</title>
+    <title>PHÚC BT V8 - Trợ Lý Học Tập & Giải Bài Tập Đa Môn</title>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a192f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PHÚC BT V7">
+    <meta name="apple-mobile-web-app-title" content="PHÚC BT V8">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="icon" type="image/png" href="favicon.png">
 
@@ -1763,6 +1763,125 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .btn-voice-input {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(34, 139, 230, 0.3);
+            background: rgba(25, 113, 194, 0.15);
+            color: #74c0fc;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .btn-voice-input.listening {
+            color: #fff;
+            background: #e03131;
+            border-color: #ff8787;
+            animation: voicePulse 1.2s infinite;
+        }
+        @keyframes voicePulse {
+            50% { box-shadow: 0 0 0 8px rgba(224, 49, 49, 0); }
+        }
+
+        /* V8 mobile-first experience */
+        body.v8-active > .ambient-canvas { opacity: .35; }
+        body.v8-active { background: #fff; }
+        body.v8-active .app-window { display: none !important; }
+        .v8-app {
+            --v8-pink: #ffd9cf;
+            --v8-purple: #dff0f2;
+            position: fixed; inset: 0; z-index: 500;
+            display: flex; flex-direction: column;
+            background: #fff; color: #111;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+        }
+        body.v8-active .v8-app { display: flex !important; }
+        body:not(.v8-active) .v8-app { display: none !important; }
+        .v8-home { flex: 1; overflow-y: auto; padding: 0 28px 120px; }
+        .v8-header {
+            height: 78px; padding: 24px 4px 10px;
+            display: grid; grid-template-columns: 1fr auto; align-items: center;
+        }
+        .v8-brand { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
+        .v8-tabs { height: 54px; padding: 4px 28px 0; display:flex; align-items:center; justify-content:center; gap:42px; position:relative; }
+        .v8-tab { border:0; background:transparent; padding:12px 8px; font-size:19px; color:#a8a8a8; cursor:pointer; font-family:inherit; }
+        .v8-tab.active { color:#111; font-weight:800; }
+        .v8-more { position:absolute; right:28px; font-size:26px; border:0; background:transparent; cursor:pointer; }
+        .v8-learning { padding-top:32px; }
+        .v8-intro { margin-bottom:20px; font-size:16px; line-height:1.55; }
+        .v8-suggestions { display:grid; gap:14px; margin-bottom:30px; }
+        .v8-chip {
+            width:fit-content; max-width:100%; min-height:58px; border:1px solid #d7d7d7;
+            border-radius:19px; background:#fff; padding:14px 18px; font:600 16px inherit;
+            display:flex; align-items:center; gap:14px; cursor:pointer;
+        }
+        .v8-chip:nth-child(2n) { width:92%; }
+        .v8-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; padding-top:2px; }
+        .v8-feature-card {
+            min-height:174px; border-radius:22px; background:#f3f4f5; padding:20px;
+            display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end;
+            cursor:pointer; border:0; text-align:left; font-family:inherit; color:#111;
+        }
+        .v8-feature-card:nth-child(5) { grid-column:span 2; min-height:150px; }
+        .v8-feature-icon {
+            width:48px;height:48px;border-radius:13px;margin-bottom:auto;display:grid;
+            place-items:center;font-size:23px;color:white;background:#9aa7ff;
+            box-shadow:0 5px 14px rgba(120,120,160,.2);
+        }
+        .v8-feature-card:nth-child(1) .v8-feature-icon { background:linear-gradient(135deg,#d9a5ff,#8d82ff); }
+        .v8-feature-card:nth-child(2) .v8-feature-icon { background:linear-gradient(135deg,#ffd397,#8cdec2); }
+        .v8-feature-card:nth-child(3) .v8-feature-icon { background:linear-gradient(135deg,#ffb6a9,#ffdf79); }
+        .v8-feature-card:nth-child(4) .v8-feature-icon { background:linear-gradient(135deg,#ffc26b,#ff9c5c); }
+        .v8-feature-card:nth-child(5) .v8-feature-icon { background:#9fb4ff; }
+        .v8-feature-card strong { font-size:20px; }
+        .v8-feature-card span:last-child { color:#888; font-size:15px; margin-top:4px; }
+        .v8-inputbar {
+            position:absolute; left:28px; right:28px; bottom:88px; z-index:3;
+            min-height:67px; border-radius:18px; background:#fff; box-shadow:0 10px 35px rgba(0,0,0,.12);
+            border:1px solid #efefef; display:flex; align-items:center; gap:10px; padding:8px 10px 8px 16px;
+        }
+        .v8-inputbar input { min-width:0; flex:1; border:0; outline:0; font:16px inherit; color:#111; }
+        .v8-round { width:44px;height:44px;border-radius:50%;border:0;background:transparent;font-size:24px;cursor:pointer;display:grid;place-items:center; }
+        .v8-mic { background:transparent; }
+        .v8-send { background:#ffddd5; color:#111; }
+        .v8-bottomnav {
+            position:absolute; left:0; right:0; bottom:0; height:78px; border-top:1px solid #eee;
+            background:#fff; display:grid; grid-template-columns:repeat(3,1fr); align-items:center;
+        }
+        .v8-nav { border:0;background:transparent;font-family:inherit;color:#888;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:13px;cursor:pointer; }
+        .v8-nav.active { color:#111;font-weight:800; }
+        .v8-nav-icon { font-size:23px;filter:grayscale(1); }
+        .v8-nav.active .v8-nav-icon { filter:none; }
+        .v8-chat-screen { display:none; flex:1; flex-direction:column; padding:0 28px; overflow:hidden; }
+        .v8-chat-screen.active { display:flex; }
+        .v8-chat-title { text-align:center; padding:0 0 15px; font-size:18px;font-weight:800;border-bottom:1px solid #eee; }
+        .v8-messages { flex:1;overflow-y:auto;padding:24px 0 180px;display:flex;flex-direction:column;gap:16px; }
+        .v8-message { max-width:84%;padding:13px 16px;border-radius:18px;font-size:15px;line-height:1.5;white-space:pre-wrap; }
+        .v8-message.user { align-self:flex-end;background:#1971c2;color:#fff;border-bottom-right-radius:5px; }
+        .v8-message.ai { align-self:flex-start;background:#f2f3f4;border-bottom-left-radius:5px; }
+        .v8-voice-sheet {
+            position:absolute;left:0;right:0;bottom:0;height:260px;background:#fff;border-radius:28px 28px 0 0;
+            box-shadow:0 -15px 45px rgba(0,0,0,.16);z-index:20;padding:18px;text-align:center;display:none;
+        }
+        .v8-voice-sheet.active { display:block; }
+        .v8-voice-sheet b { font-size:18px; }
+        .v8-wave { height:62px;margin:18px 0;background:linear-gradient(90deg,#eef,#ffd9cf,#eef);border-radius:20px;animation:v8pulse 1s infinite; }
+        @keyframes v8pulse { 50% { transform:scaleY(.65);opacity:.75; } }
+        .v8-record-options { display:flex;justify-content:center;gap:12px;margin-top:8px; }
+        .v8-option { border:1px solid #ddd;border-radius:14px;padding:10px 14px;background:#fff;font:600 14px inherit;cursor:pointer; }
+        .v8-conversation { display:none; position:absolute; inset:78px 0 78px; background:#fff;z-index:10;flex-direction:column;align-items:center;text-align:center;padding:30px 24px;overflow:hidden; }
+        .v8-conversation.active { display:flex; }
+        .v8-conversation-orb { width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,#fff 0 18%,#ffcfc4 19% 58%,#ffdfe8 59%);display:grid;place-items:center;margin-top:8vh;font-size:52px;box-shadow:0 18px 60px rgba(255,162,145,.28);animation:v8orb 2s ease-in-out infinite; }
+        @keyframes v8orb { 50% { transform:scale(1.04); } }
+        .v8-conversation h2 { font-size:24px;margin-top:28px; }
+        .v8-conversation p { color:#777;line-height:1.6;max-width:360px; }
+        .v8-listening-status { position:absolute;bottom:24px;color:#1971c2;font-weight:700; }
+        @media(min-width:861px) {
+            .v8-app { left:50%;right:auto;width:min(430px,100vw);transform:translateX(-50%);border-left:1px solid #eee;border-right:1px solid #eee;box-shadow:0 0 40px rgba(0,0,0,.12); }
+        }
+
     </style>
 </head>
 <body>
@@ -1780,10 +1899,10 @@
 
         <!-- ================= SIDEBAR ================= -->
         <aside class="sidebar" id="sidebar">
-            <!-- Brand header in sidebar (Image 3): Squircle Avatar 'P' + 'PHÚC BT V7' -->
+            <!-- Brand header in sidebar (Image 3): Squircle Avatar 'P' + 'PHÚC BT V8' -->
             <div class="sidebar-brand-row">
-                <div class="avatar-box" title="PHÚC BT V7">P</div>
-                <div class="sidebar-brand-name">PHÚC BT V7</div>
+                <div class="avatar-box" title="PHÚC BT V8">P</div>
+                <div class="sidebar-brand-name">PHÚC BT V8</div>
             </div>
 
             <!-- Search input -->
@@ -1830,7 +1949,7 @@
                         ☰
                     </button>
                     <div class="app-name">
-                        PHÚC BT V7
+                        PHÚC BT V8
                     </div>
                 </div>
 
@@ -1893,7 +2012,7 @@
 
                     <div class="input-center">
                         <textarea class="chat-textarea" id="chatInput" rows="1" 
-                                  placeholder="Hỏi PHÚC BT V7 hoặc gửi bài tập mọi môn..."
+                                  placeholder="Hỏi PHÚC BT V8 hoặc gửi bài tập mọi môn..."
                                   onkeydown="handleKeyDown(event)"
                                   oninput="autoResizeTextarea(this)"></textarea>
                     </div>
@@ -1902,7 +2021,6 @@
                     <button type="button" class="mode-capsule-btn" id="btnModeToggle" onclick="cycleAnswerMode()" title="Chế độ trả lời: Nhanh (Trl nhanh) / Bình thường / Suy nghĩ">
                         <span id="modeLabel">Nhanh</span>
                     </button>
-
                     <!-- Nút Gửi / Nút hình vuông huỷ khi AI đang trả lời -->
                     <button type="button" class="btn-send" id="btnSend" onclick="handleSendOrStop()" title="Gửi tin nhắn">
                         Gửi
@@ -1927,16 +2045,16 @@
             <div class="auth-card-header">
                 <div class="auth-avatar-p">P</div>
                 <div class="auth-header-text">
-                    <div class="app-sub-title">PHÚC BT V7</div>
+                    <div class="app-sub-title">PHÚC BT V8</div>
                     <div class="app-main-title">Cài đặt ứng dụng</div>
                 </div>
             </div>
             <div class="auth-divider"></div>
             <p style="font-size:14px; line-height:1.7; color:#c5d4e8;">
-                Bạn có thể cài đặt <strong>PHÚC BT V7</strong> để mở nhanh trên PC và Điện thoại:
+                Bạn có thể cài đặt <strong>PHÚC BT V8</strong> để mở nhanh trên PC và Điện thoại:
             </p>
             <ul style="margin: 12px 0 18px 20px; font-size:13.5px; line-height: 1.8; color: #a0b8d5;">
-                <li><strong>Trên máy tính (Chrome/Edge):</strong> Bấm vào biểu tượng <strong>Cài đặt</strong> (Install) trên thanh địa chỉ, hoặc chọn menu 3 chấm <code>⋮</code> ➔ <em>"Cài đặt PHÚC BT V7..."</em>.</li>
+                <li><strong>Trên máy tính (Chrome/Edge):</strong> Bấm vào biểu tượng <strong>Cài đặt</strong> (Install) trên thanh địa chỉ, hoặc chọn menu 3 chấm <code>⋮</code> ➔ <em>"Cài đặt PHÚC BT V8..."</em>.</li>
                 <li><strong>Trên điện thoại Android:</strong> Bấm menu 3 chấm <code>⋮</code> của Chrome ➔ chọn <em>"Cài đặt ứng dụng"</em> hoặc <em>"Thêm vào Màn hình chính"</em>.</li>
                 <li><strong>Trên iPhone/iPad:</strong> Mở Safari ➔ bấm nút <strong>Chia sẻ</strong> (icon ô vuông mũi tên lên) ➔ chọn <em>"Thêm vào MH chính"</em>.</li>
             </ul>
@@ -1951,7 +2069,7 @@
             <div class="auth-card-header">
                 <div class="auth-avatar-p">P</div>
                 <div class="auth-header-text">
-                    <div class="app-sub-title">PHÚC BT V7</div>
+                    <div class="app-sub-title">PHÚC BT V8</div>
                     <div class="app-main-title" id="authMainTitle">Đăng nhập tài khoản</div>
                 </div>
             </div>
@@ -2005,47 +2123,109 @@
     <!-- Toast message -->
     <div class="toast" id="toast"></div>
 
+    <section class="v8-app" id="v8App">
+        <header class="v8-header">
+            <div class="v8-brand">PHÚC BT V8</div>
+        </header>
+        <div class="v8-tabs">
+            <button class="v8-tab active" id="v8LearnTab" onclick="setV8Mode('learn')">Học tập</button>
+            <button class="v8-tab" id="v8ChatTab" onclick="setV8Mode('chat')">Trò chuyện</button>
+            <button class="v8-more" onclick="toggleSidebar()" aria-label="Mở lịch sử">⋯</button>
+        </div>
+
+        <main class="v8-home" id="v8Home">
+            <section class="v8-learning" id="v8Learning">
+                <div class="v8-intro">👋 <strong>Chào mừng bạn đến với Chế độ Học tập.</strong> Học nhanh hơn những chủ đề khó với phần giải thích rõ ràng và trực quan.</div>
+                <div class="v8-suggestions">
+                    <button class="v8-chip" onclick="v8QuickPrompt('Giải thích lực ma sát bằng sơ đồ tư duy')">🖼️ Giải thích lực ma sát bằng sơ đồ tư duy</button>
+                    <button class="v8-chip" onclick="v8QuickPrompt('Tạo thẻ ghi nhớ về thời Phục Hưng')">✨ Tạo thẻ ghi nhớ về thời Phục Hưng</button>
+                    <button class="v8-chip" onclick="v8QuickPrompt('Tạo bài kiểm tra về phương trình tuyến tính')">🪄 Tạo bài kiểm tra về phương trình tuyến tính</button>
+                </div>
+                <div class="v8-grid">
+                    <button class="v8-feature-card" onclick="openV8Feature('quiz')"><span class="v8-feature-icon">✦</span><strong>Tạo đề</strong><span>Hỏi đáp ngay</span></button>
+                    <button class="v8-feature-card" onclick="openV8Feature('flashcard')"><span class="v8-feature-icon">✦</span><strong>Sơ đồ tư duy</strong><span>Tổ chức ý trực quan</span></button>
+                    <button class="v8-feature-card" onclick="openV8Feature('solve')"><span class="v8-feature-icon">＋⌁</span><strong>Máy tính</strong><span>Khoa học & Đồ thị</span></button>
+                    <button class="v8-feature-card" onclick="openV8Feature('summarize')"><span class="v8-feature-icon">A_</span><strong>Tóm tắt</strong><span>Tóm ý cực nhanh</span></button>
+                    <button class="v8-feature-card" onclick="openV8Feature('write')"><span class="v8-feature-icon">▤</span><strong>Trợ lý viết</strong><span>Nâng tâm bài viết</span></button>
+                </div>
+            </section>
+        </main>
+
+        <section class="v8-chat-screen" id="v8ChatScreen">
+            <div class="v8-chat-title">Trò chuyện</div>
+            <div class="v8-messages" id="v8Messages"></div>
+        </section>
+
+        <section class="v8-conversation" id="v8Conversation">
+            <div class="v8-conversation-orb">✦</div>
+            <h2 id="v8ConversationTitle">Bắt đầu trò chuyện</h2>
+            <p id="v8ConversationHint">Bấm vào mic, nói tự nhiên và trò chuyện như với một người bạn. PHÚC BT V8 sẽ tự trả lời bằng giọng nói.</p>
+            <button class="v8-round" style="font-size:32px;background:#ffd9cf;margin-top:12px" onclick="startRealtimeConversation()">🎙️</button>
+            <div class="v8-listening-status" id="v8ListeningStatus"></div>
+        </section>
+
+        <div class="v8-inputbar" id="v8InputBar">
+            <button class="v8-round" onclick="triggerPickFiles()" title="Gửi hình ảnh">▧</button>
+            <input id="v8TextInput" placeholder="Hỏi PHÚC BT V8..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();v8SendText()}">
+            <button class="v8-round v8-mic" onclick="toggleV8VoiceSheet()" title="Nhập giọng nói">🎙️</button>
+            <button class="v8-round v8-send" onclick="v8SendText()" title="Gửi">↑</button>
+        </div>
+
+        <div class="v8-voice-sheet" id="v8VoiceSheet">
+            <b id="v8VoiceTitle">Bạn muốn gửi bằng?</b>
+            <div class="v8-wave"></div>
+            <div class="v8-record-options">
+                <button class="v8-option" onclick="startV8Dictation()">Văn bản</button>
+                <button class="v8-option" onclick="toggleV8Recording()">Bản ghi âm</button>
+                <button class="v8-option" onclick="closeV8VoiceSheet()">Đóng</button>
+            </div>
+        </div>
+
+        <nav class="v8-bottomnav" id="v8BottomNav">
+            <button class="v8-nav active" id="v8NavHome" onclick="showV8Home()"><span class="v8-nav-icon">⌂</span>Trang chủ</button>
+            <button class="v8-nav" onclick="setV8Mode('conversation')"><span class="v8-nav-icon">✦</span>Giao lưu</button>
+            <button class="v8-nav" onclick="showLegacyHistory()"><span class="v8-nav-icon">☺</span>Hồ sơ</button>
+        </nav>
+    </section>
+
     <script>
         // Obfuscated key to prevent GitHub Push Protection scanner from blocking upload
-        const API_KEY = atob('QVEuQWI4Uk42SVJteGxNLWJtQWdzRk04ajV7V21jalRCWlVzVm5VT01MekJXMk5lWmJyeXc=');
-        const PRIMARY_MODEL = 'gemini-2.5-flash';
-        const FALLBACK_MODEL = 'gemini-2.5-flash-lite';
+        const API_KEY = 'AQ.Ab8RN6IRmxlM-bmAgsFM8j5zWmcjTBZUsVnUOMLzBW2NeZbryw';
+        const PRIMARY_MODEL = 'gemini-2.5-pro';
+        const FALLBACK_MODEL = 'gemini-2.5-flash';
 
         // 3 Chế độ trả lời xếp theo thứ tự từ nhanh đến chậm: Nhanh -> Bình thường -> Suy nghĩ
         const ANSWER_MODES = [
             {
                 id: 'fast',
                 label: 'Nhanh',
-                model: 'gemini-2.5-flash-lite',
-                fallback: 'gemini-2.5-flash',
+                model: 'gemini-2.5-pro',
+                fallback: 'gemini-2.5-pro',
                 temp: 0.05,
                 extraSystem: '\n5. CHẾ ĐỘ NHANH: Ưu tiên tốc độ nhưng không đánh đổi độ chính xác. Trình bày ngắn gọn, kiểm tra phép tính, điều kiện và đáp án trước khi kết luận.'
             },
             {
                 id: 'normal',
-                label: 'Bình thường',
-                model: 'gemini-2.5-flash',
-                fallback: 'gemini-2.5-flash-lite',
+                label: 'Cực thông minh',
+                model: 'gemini-2.5-pro',
+                fallback: 'gemini-2.5-pro',
                 temp: 0.08,
                 extraSystem: '\n5. CHẾ ĐỘ BÌNH THƯỜNG: Cân bằng tốc độ và độ chính xác. Giải đầy đủ từng bước, đối chiếu điều kiện đề bài và tự rà phép tính trước khi kết luận.'
             },
             {
                 id: 'deep',
-                label: 'Suy nghĩ',
+                label: 'Cực thông minh',
                 model: 'gemini-2.5-pro',
-                fallback: 'gemini-2.5-flash',
+                fallback: 'gemini-2.5-pro',
                 temp: 0.03,
                 extraSystem: '\n5. CHẾ ĐỘ SUY NGHĨ SÂU: Phân tích kỹ đề bài, cân nhắc nhiều cách giải, tự kiểm tra độc lập bằng cách thay ngược kết quả, đối chiếu điều kiện, đơn vị và đáp số; chỉ kết luận sau khi loại sai sót logic và tính toán.'
             }
         ];
-        let currentModeIdx = 0; // Mặc định: Nhanh (trl nhanh)
+        let currentModeIdx = 2;
 
         function initAnswerMode() {
-            const saved = localStorage.getItem('phuc_bt_mode');
-            if (saved) {
-                const found = ANSWER_MODES.findIndex(m => m.id === saved);
-                if (found !== -1) currentModeIdx = found;
-            }
+            currentModeIdx = 2;
+            localStorage.setItem('phuc_bt_mode', ANSWER_MODES[2].id);
             updateModeUI();
         }
 
@@ -2062,7 +2242,7 @@
             const lbl = document.getElementById('modeLabel');
             if (lbl) lbl.textContent = m.label;
             const btn = document.getElementById('btnModeToggle');
-            if (btn) btn.title = `Chế độ: ${m.label} (Bấm để chuyển giữa Nhanh / Bình thường / Suy nghĩ)`;
+            if (btn)             btn.title = `Chế độ: ${m.label} (Gemini Pro)`;
         }
 
         // PWA prompt
@@ -2086,9 +2266,100 @@
 
         // Speech synthesis for listening to answers
         let currentUtterance = null;
+        let legacyDictationRecognition = null;
+        let legacyDictationActive = false;
+        let legacyDictationBaseText = '';
+        let legacyDictationFinalParts = [];
 
-        // System prompt for PHÚC BT V7 (without calculator emojis)
-        const SYSTEM_INSTRUCTION = `Bạn là "PHÚC BT V7" - trợ lý trí tuệ nhân tạo chuyên sâu về HỌC TẬP, GIẢI BÀI TẬP và RA ĐỀ LUYỆN TẬP cho TẤT CẢ CÁC MÔN HỌC (Toán, Vật lý, Hóa học, Sinh học, Ngữ văn, Tiếng Anh, Lịch sử, Địa lý, Tin học / Lập trình, GDCD, Khoa học tự nhiên, Khoa học xã hội...).
+        async function toggleLegacyDictation() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showToast('Trình duyệt này chưa hỗ trợ nhận giọng nói. Hãy dùng Chrome hoặc Edge.');
+                return;
+            }
+
+            const button = document.getElementById('btnVoiceInput');
+            if (legacyDictationRecognition) {
+                legacyDictationActive = false;
+                legacyDictationRecognition.stop();
+                legacyDictationRecognition = null;
+                button.classList.remove('listening');
+                button.textContent = '🎙️';
+                return;
+            }
+
+            try {
+                if (!navigator.mediaDevices?.getUserMedia) {
+                    showToast('Trình duyệt không thể truy cập micro');
+                    return;
+                }
+                const permissionStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                permissionStream.getTracks().forEach(track => track.stop());
+            } catch (error) {
+                showToast(error.name === 'NotAllowedError'
+                    ? 'Bạn cần cho phép truy cập micro trong trình duyệt rồi thử lại'
+                    : 'Không thể mở micro. Hãy kiểm tra thiết bị mic');
+                return;
+            }
+
+            const input = document.getElementById('chatInput');
+            legacyDictationBaseText = input.value.trim();
+            legacyDictationFinalParts = [];
+            legacyDictationActive = true;
+            legacyDictationRecognition = new SpeechRecognition();
+            legacyDictationRecognition.lang = 'vi-VN';
+            legacyDictationRecognition.continuous = true;
+            legacyDictationRecognition.interimResults = true;
+
+            const baseText = input.value.trim();
+            legacyDictationRecognition.onresult = event => {
+                let interimText = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const part = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) legacyDictationFinalParts[i] = part.trim();
+                    else interimText += part;
+                }
+                const finalText = legacyDictationFinalParts.filter(Boolean).join(' ').trim();
+                input.value = [baseText, finalText, interimText.trim()].filter(Boolean).join(' ');
+                input.dispatchEvent(new Event('input'));
+            };
+
+            legacyDictationRecognition.onend = () => {
+                if (legacyDictationActive && legacyDictationRecognition) {
+                    try {
+                        legacyDictationRecognition.start();
+                        return;
+                    } catch (error) {}
+                }
+                legacyDictationRecognition = null;
+                button.classList.remove('listening');
+                button.textContent = '🎙️';
+            };
+            legacyDictationRecognition.onerror = event => {
+                showToast(event.error === 'not-allowed'
+                    ? 'Bạn chưa cho phép truy cập micro'
+                    : event.error === 'no-speech'
+                    ? 'Không nghe thấy giọng nói, hãy bấm micro và nói lại'
+                    : 'Không nghe rõ, vui lòng nói lại');
+                if (event.error === 'no-speech' || event.error === 'audio-capture') return;
+                legacyDictationActive = false;
+            };
+
+            legacyDictationRecognition.start();
+            button.classList.add('listening');
+            button.textContent = '■';
+            showToast('Đang nghe... nói xong micro sẽ tắt tự động');
+        }
+
+        // System prompt for PHÚC BT V8 (without calculator emojis)
+        const SYSTEM_INSTRUCTION = `Bạn là "PHÚC BT V8" - trợ lý trí tuệ nhân tạo chuyên sâu về HỌC TẬP, GIẢI BÀI TẬP và RA ĐỀ LUYỆN TẬP cho TẤT CẢ CÁC MÔN HỌC (Toán, Vật lý, Hóa học, Sinh học, Ngữ văn, Tiếng Anh, Lịch sử, Địa lý, Tin học / Lập trình, GDCD, Khoa học tự nhiên, Khoa học xã hội...).
+
+KHI VẼ SƠ ĐỒ TƯ DUY, HÌNH HỌC, ĐỒ THỊ HOẶC HÌNH MINH HỌA LỊCH SỬ - ĐỊA LÝ:
+- Chỉ vẽ hoặc tạo hình trực quan trong khu vực chat khi người dùng yêu cầu.
+- Khi có thể, kết hợp sơ đồ SVG tự vẽ với hình ảnh web đã được xác thực.
+- Với sơ đồ tư duy, trả về SVG rõ ràng với tiêu đề ở giữa, các nhánh, mũi tên và nhãn ngắn.
+- Với hình học hoặc đồ thị, dùng SVG nền trắng, trục, điểm và ký hiệu rõ.
+- Không tự tạo ảnh chân dung hoặc địa danh lịch sử bằng AI; dùng nguồn Wikimedia/Wikipedia đã xác minh khi người dùng yêu cầu ảnh tư liệu.
 
 QUY TẮC BẮT BUỘC:
 1. XỬ LÝ HÌNH ẢNH HOẶC TẬP TIN:
@@ -2102,7 +2373,7 @@ QUY TẮC BẮT BUỘC:
    - Luôn chốt đáp số nổi bật ở cuối bài bằng: **ĐÁP SỐ:** hoặc **KẾT LUẬN:**.
 
 3. RA ĐỀ BÀI THEO YÊU CẦU:
-   - Khi người dùng yêu cầu ra đề bài (ví dụ: "cho mình 5 câu trắc nghiệm Hoá", "ra đề toán hình lớp 9", "cho bài tập Tiếng Anh thì hiện tại hoàn thành"...), PHÚC BT V7 lập tức biên soạn đề bài chuẩn xác, phân loại độ khó rõ ràng (Nhận biết, Thông hiểu, Vận dụng), kèm đáp án và lời giải chi tiết khi được yêu cầu.
+   - Khi người dùng yêu cầu ra đề bài (ví dụ: "cho mình 5 câu trắc nghiệm Hoá", "ra đề toán hình lớp 9", "cho bài tập Tiếng Anh thì hiện tại hoàn thành"...), PHÚC BT V8 lập tức biên soạn đề bài chuẩn xác, phân loại độ khó rõ ràng (Nhận biết, Thông hiểu, Vận dụng), kèm đáp án và lời giải chi tiết khi được yêu cầu.
 
 4. TÌM KIẾM HÌNH ẢNH TRÊN MẠNG & TẠO HÌNH ẢNH HỌC TẬP:
    - Khi người dùng hỏi hoặc yêu cầu hình ảnh về BẤT KỲ NHÂN VẬT LỊCH SỬ (như Hưng Đạo Đại Vương Trần Hưng Đạo, Bác Hồ, Đại tướng Võ Nguyên Giáp, Hai Bà Trưng, Ngô Quyền, Lê Lợi, Quang Trung...), địa danh lịch sử, địa lý, kiến thức sinh học, danh nhân thế giới, khoa học...:
@@ -2118,10 +2389,10 @@ QUY TẮC BẮT BUỘC:
      + Đầy đủ các đỉnh (A, B, C...), đường cao nét đứt, góc vuông, ký hiệu góc, cạnh bằng nhau.
 
 5. PHẠM VI TRẢ LỜI & GIỚI HẠN:
-   - PHÚC BT V7 hỗ trợ toàn diện tất cả các môn học (Toán, Lý, Hóa, Sinh, Sử, Địa, Văn, Ngoại ngữ, Tin học, GDCD...) bao gồm giải bài tập, cung cấp hình ảnh minh họa lịch sử, danh nhân, địa lý và ra đề bài theo yêu cầu.
+   - PHÚC BT V8 hỗ trợ toàn diện tất cả các môn học (Toán, Lý, Hóa, Sinh, Sử, Địa, Văn, Ngoại ngữ, Tin học, GDCD...) bao gồm giải bài tập, cung cấp hình ảnh minh họa lịch sử, danh nhân, địa lý và ra đề bài theo yêu cầu.
    - Chỉ từ chối những câu hỏi trêu đùa hoàn toàn không liên quan (như "tôi có đẹp trai không"). Tất cả câu hỏi về môn học, nhân vật, kiến thức xã hội, khoa học đều được giải đáp nhiệt tình.
    - Tuyệt đối KHÔNG dùng icon máy tính trong câu trả lời.
-   - Luôn thân thiện, chuẩn xác, xưng là "PHÚC BT V7" hoặc "mình", gọi người dùng là "bạn".`;
+   - Luôn thân thiện, chuẩn xác, xưng là "PHÚC BT V8" hoặc "mình", gọi người dùng là "bạn".`;
 
         const ACCURACY_INSTRUCTION = `
 QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
@@ -2154,7 +2425,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        showToast('🎉 Đang cài đặt PHÚC BT V7 vào thiết bị của bạn!');
+                        showToast('🎉 Đang cài đặt PHÚC BT V8 vào thiết bị của bạn!');
                     }
                     deferredPrompt = null;
                 });
@@ -2309,7 +2580,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
                     messages: [
                         {
                             role: 'model',
-                            text: 'Chào bạn! Mình là **PHÚC BT V7** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức, **vẽ hình học / tạo hình ảnh minh họa**, hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
+                            text: 'Chào bạn! Mình là **PHÚC BT V8** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức, **vẽ hình học / tạo hình ảnh minh họa**, hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
                         }
                     ],
                     updatedAt: Date.now()
@@ -2688,7 +2959,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
                 messages: [
                     {
                         role: 'model',
-                        text: 'Chào bạn! Mình là **PHÚC BT V7** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức, **vẽ hình học / tạo hình ảnh minh họa**, hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
+                        text: 'Chào bạn! Mình là **PHÚC BT V8** ✨\n\nMình có thể giúp bạn giải chi tiết bài tập tất cả các môn (Toán, Lý, Hoá, Sinh, Văn, Tiếng Anh, Sử, Địa, Tin...), giải đáp kiến thức, **vẽ hình học / tạo hình ảnh minh họa**, hoặc **ra đề bài luyện tập** theo yêu cầu.\n\nBạn hãy gửi bài tập hoặc yêu cầu cho mình nhé!'
                     }
                 ],
                 updatedAt: Date.now()
@@ -2715,7 +2986,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
             if (sessions.length <= 1) {
                 sessions[0].messages = [{
                     role: 'model',
-                    text: 'Chào bạn! Mình là **PHÚC BT V7** ✨\n\nBạn cần giải bài toán nào hãy gửi cho mình nhé!'
+                    text: 'Chào bạn! Mình là **PHÚC BT V8** ✨\n\nBạn cần giải bài toán nào hãy gửi cho mình nhé!'
                 }];
                 sessions[0].title = 'Cuộc trò chuyện mới';
             } else {
@@ -2815,7 +3086,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
                 const msgIdSafe = `ai_msg_${idx}`;
                 
                 row.innerHTML = `
-                    <div class="msg-sender-label">PHÚC BT V7</div>
+                    <div class="msg-sender-label">PHÚC BT V8</div>
                     <div class="msg-bubble-ai" id="${msgIdSafe}">
                         <div class="ai-msg-content">${parsedContent}</div>
                         <div class="msg-transparent-actions">
@@ -2942,7 +3213,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
             const clone = bubble.cloneNode(true);
             const bar = clone.querySelector('.ai-action-bar');
             if (bar) bar.remove();
-            const subject = encodeURIComponent('Lời giải từ PHÚC BT V7');
+            const subject = encodeURIComponent('Lời giải từ PHÚC BT V8');
             const body = encodeURIComponent(clone.innerText.trim());
             window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
         }
@@ -3023,7 +3294,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
             row.className = 'msg-row ai-row';
             row.id = id;
             row.innerHTML = `
-                <div class="msg-sender-label">PHÚC BT V7</div>
+                <div class="msg-sender-label">PHÚC BT V8</div>
                 <div class="msg-bubble-ai">
                     <div class="typing-wave">
                         <span></span><span></span><span></span>
@@ -3395,7 +3666,7 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
                     console.log('User cancelled generation');
                 } else {
                     console.error('API Error:', err);
-                    const errMsg = `Xin lỗi bạn, PHÚC BT V7 gặp lỗi khi xử lý: ${err.message || 'Lỗi mạng hoặc API'}. Bạn vui lòng thử lại nhé!`;
+                    const errMsg = `Xin lỗi bạn, PHÚC BT V8 gặp lỗi khi xử lý: ${err.message || 'Lỗi mạng hoặc API'}. Bạn vui lòng thử lại nhé!`;
                     appendMessageToDOM('model', errMsg, null, session.messages.length);
                 }
             } finally {
@@ -3657,9 +3928,9 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
                 return;
             }
 
-            let content = `# Cuộc hội thoại với PHÚC BT V7 - ${new Date().toLocaleString('vi-VN')}\n\n`;
+            let content = `# Cuộc hội thoại với PHÚC BT V8 - ${new Date().toLocaleString('vi-VN')}\n\n`;
             session.messages.forEach(m => {
-                content += `### ${m.role === 'user' ? '👤 BẠN' : 'PHÚC BT V7'}:\n${m.text}\n\n---\n\n`;
+                content += `### ${m.role === 'user' ? '👤 BẠN' : 'PHÚC BT V8'}:\n${m.text}\n\n---\n\n`;
             });
 
             const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
@@ -3825,6 +4096,211 @@ QUY TẮC ĐỘ CHÍNH XÁC TUYỆT ĐỐI:
             initAmbientCanvas();
             setTimeout(() => { checkCloudUpdates(true); backupAllAccountsToCloud(); }, 1000);
         });
+
+        /* PHUC BT V8 UI and voice conversation layer */
+        let v8CurrentMode = 'learn';
+        let v8ConversationHistory = [];
+        let v8Recognition = null;
+        let v8RealtimeActive = false;
+        let v8MediaRecorder = null;
+        let v8AudioChunks = [];
+
+        function v8Activate() {
+            document.body.classList.add('v8-active');
+            const stored = localStorage.getItem('phuc_bt_v8_mode') || 'learn';
+            setV8Mode(stored);
+        }
+
+        function setV8Mode(mode) {
+            v8CurrentMode = mode;
+            localStorage.setItem('phuc_bt_v8_mode', mode === 'conversation' ? 'conversation' : mode);
+            document.querySelectorAll('.v8-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('v8LearnTab')?.classList.toggle('active', mode === 'learn');
+            document.getElementById('v8ChatTab')?.classList.toggle('active', mode === 'chat');
+
+            document.getElementById('v8Learning').style.display = mode === 'learn' ? 'block' : 'none';
+            document.getElementById('v8Home').style.display = mode === 'learn' ? 'block' : 'none';
+            document.getElementById('v8ChatScreen').classList.toggle('active', mode === 'chat');
+            document.getElementById('v8Conversation').classList.toggle('active', mode === 'conversation');
+            document.getElementById('v8InputBar').style.display = mode === 'conversation' ? 'none' : 'flex';
+            document.getElementById('v8BottomNav')?.classList.toggle('active', mode === 'conversation');
+            document.querySelectorAll('.v8-nav').forEach(el => el.classList.remove('active'));
+            if (mode === 'conversation') document.querySelector('.v8-nav:nth-child(2)')?.classList.add('active');
+            else document.getElementById('v8NavHome')?.classList.add('active');
+        }
+
+        function showV8Home() {
+            stopV8Conversation();
+            setV8Mode('learn');
+        }
+
+        function openV8Feature(feature) {
+            const prompts = {
+                quiz: 'Tạo cho tôi một đề kiểm tra ngắn, có đáp án và lời giải.',
+                flashcard: 'Tạo sơ đồ tư duy chi tiết theo chủ đề tôi sẽ nhập.',
+                solve: 'Hướng dẫn giải bài toán hoặc vẽ đồ thị cho tôi.',
+                summarize: 'Hãy tóm tắt nội dung tôi gửi và làm nổi bật ý chính.',
+                write: 'Đóng vai trợ lý viết: hãy giúp tôi cải thiện đoạn văn này.'
+            };
+            document.getElementById('v8Home').style.display = 'none';
+            setV8Mode('chat');
+            v8AppendMessage('ai', prompts[feature] || 'Bạn muốn mình giúp gì?');
+            document.getElementById('v8TextInput').value = feature === 'flashcard'
+                ? 'Tạo sơ đồ tư duy về: '
+                : feature === 'solve'
+                    ? 'Giải bài toán sau: '
+                    : feature === 'summarize' ? 'Tóm tắt: ' : feature === 'write' ? 'Chỉnh sửa đoạn văn sau: ' : '';
+            document.getElementById('v8TextInput').focus();
+        }
+
+        function v8QuickPrompt(text) {
+            setV8Mode('chat');
+            document.getElementById('v8TextInput').value = text;
+            v8SendText();
+        }
+
+        function v8AppendMessage(role, text, audioLabel = '') {
+            const messages = document.getElementById('v8Messages');
+            const el = document.createElement('div');
+            el.className = `v8-message ${role}`;
+            el.textContent = audioLabel || text;
+            messages.appendChild(el);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        async function v8SendText() {
+            const input = document.getElementById('v8TextInput');
+            const text = input.value.trim();
+            if (!text || isGenerating) return;
+            input.value = '';
+            v8AppendMessage('user', text);
+
+            const typing = document.createElement('div');
+            typing.className = 'v8-message ai';
+            typing.textContent = 'Đang suy nghĩ...';
+            document.getElementById('v8Messages').appendChild(typing);
+            try {
+                const answer = await callGeminiAPI(ANSWER_MODES[currentModeIdx].model, [{ role: 'user', parts: [{ text }] }]);
+                typing.remove();
+                v8AppendMessage('ai', answer);
+            } catch (error) {
+                typing.textContent = 'Không thể kết nối AI. ' + error.message;
+            }
+        }
+
+        function toggleV8VoiceSheet() {
+            document.getElementById('v8VoiceSheet').classList.toggle('active');
+        }
+        function closeV8VoiceSheet() {
+            document.getElementById('v8VoiceSheet').classList.remove('active');
+        }
+
+        function createV8Recognizer(onResult, continuous = false) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showToast('Trình duyệt chưa hỗ trợ nhận dạng giọng nói');
+                return null;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'vi-VN';
+            recognition.interimResults = false;
+            recognition.continuous = continuous;
+            recognition.onresult = event => {
+                const transcript = event.results[event.results.length - 1][0].transcript;
+                onResult(transcript);
+            };
+            recognition.onerror = event => {
+                document.getElementById('v8ListeningStatus').textContent =
+                    event.error === 'not-allowed' ? 'Bạn chưa cho phép dùng mic' : 'Không nghe rõ, vui lòng nói lại';
+            };
+            return recognition;
+        }
+
+        function startV8Dictation() {
+            closeV8VoiceSheet();
+            const recognition = createV8Recognizer(text => {
+                document.getElementById('v8TextInput').value = text;
+                v8SendText();
+            });
+            recognition?.start();
+        }
+
+        async function toggleV8Recording() {
+            if (v8MediaRecorder && v8MediaRecorder.state === 'recording') {
+                v8MediaRecorder.stop();
+                closeV8VoiceSheet();
+                return;
+            }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                v8AudioChunks = [];
+                v8MediaRecorder = new MediaRecorder(stream);
+                v8MediaRecorder.ondataavailable = e => v8AudioChunks.push(e.data);
+                v8MediaRecorder.onstop = () => {
+                    stream.getTracks().forEach(track => track.stop());
+                    v8AppendMessage('user', '', '🎙️ Bản ghi âm đã gửi');
+                    showToast('Đã gửi bản ghi âm');
+                };
+                v8MediaRecorder.start();
+                document.getElementById('v8VoiceTitle').textContent = 'Đang ghi âm... bấm lại để gửi';
+                document.querySelector('[onclick="toggleV8Recording()"]').textContent = 'Gửi bản ghi';
+            } catch (error) {
+                showToast('Không thể mở micro');
+            }
+        }
+
+        function stopV8Conversation() {
+            v8RealtimeActive = false;
+            if (v8Recognition) v8Recognition.stop();
+            speechSynthesis.cancel();
+            document.getElementById('v8ListeningStatus').textContent = '';
+        }
+
+        async function startRealtimeConversation() {
+            if (v8RealtimeActive) {
+                stopV8Conversation();
+                return;
+            }
+            v8RealtimeActive = true;
+            document.getElementById('v8ConversationTitle').textContent = 'Bạn cần mình giúp gì hôm nay?';
+            document.getElementById('v8ConversationHint').textContent = 'Tôi đang nghe bạn...';
+            document.getElementById('v8ListeningStatus').textContent = '🎙️ Đang nghe';
+            speechSynthesis.speak(new SpeechSynthesisUtterance('Bạn cần mình giúp gì hôm nay?'));
+            listenRealtime();
+        }
+
+        function listenRealtime() {
+            if (!v8RealtimeActive) return;
+            if (v8Recognition) {
+                try { v8Recognition.stop(); } catch (e) {}
+            }
+            v8Recognition = createV8Recognizer(async text => {
+                if (!v8RealtimeActive) return;
+                document.getElementById('v8ListeningStatus').textContent = 'Bạn: ' + text;
+                try {
+                    v8ConversationHistory.push({ role: 'user', parts: [{ text }] });
+                    const answer = await callGeminiAPI(ANSWER_MODES[currentModeIdx].model, v8ConversationHistory);
+                    v8ConversationHistory.push({ role: 'model', parts: [{ text: answer }] });
+                    document.getElementById('v8ListeningStatus').textContent = 'PHÚC BT V8 đang nói...';
+                    const utterance = new SpeechSynthesisUtterance(answer.replace(/[#*_`]/g, '').slice(0, 1200));
+                    utterance.lang = 'vi-VN';
+                    utterance.onend = () => { if (v8RealtimeActive) listenRealtime(); };
+                    speechSynthesis.cancel();
+                    speechSynthesis.speak(utterance);
+                } catch (error) {
+                    document.getElementById('v8ListeningStatus').textContent = 'Lỗi kết nối, hãy nói lại';
+                    listenRealtime();
+                }
+            }, false);
+            try { v8Recognition?.start(); } catch (e) {}
+        }
+
+        function showLegacyHistory() {
+            document.body.classList.remove('v8-active');
+            document.body.classList.add('legacy-history-open');
+        }
+
+        // Giao diện chính V7/V8 dùng lại app-window hiện có; lớp V8 chỉ là phần bổ sung.
     </script>
 </body>
 </html>
